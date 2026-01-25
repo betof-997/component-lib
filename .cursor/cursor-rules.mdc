@@ -11,6 +11,7 @@ this is a component lib that uses shadcn as a base for creating components
 - React 19+ with TypeScript
 - Tailwind CSS v4 for styling
 - Bun
+- Biome
 
 ## React Component Rules
 
