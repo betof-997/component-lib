@@ -7,6 +7,9 @@ export const Button = ({
 	className,
 	variant,
 	size,
+	isOutlined,
+	isGhost,
+	isRounded,
 	asChild = false,
 	...props
 }: ButtonProps) => {
@@ -15,7 +18,7 @@ export const Button = ({
 	return (
 		<Comp
 			data-slot='button'
-			className={cn(buttonVariants({ variant, size, className }))}
+			className={cn(buttonVariants({ variant, size, isOutlined, isGhost, isRounded, className }))}
 			{...props}
 		/>
 	)
