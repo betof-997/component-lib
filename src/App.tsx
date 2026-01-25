@@ -1,125 +1,227 @@
-import type { PropsWithChildren } from 'react'
-import { Button } from './components/button'
+import type { PropsWithChildren } from 'react';
+import { useState } from 'react';
+import { Button } from './components/button';
+import { TextInput } from './components/text-input';
+import { cn } from './lib/utils';
 
 type ComponentSectionProps = PropsWithChildren<{
-	title: string
-}>
+	title: string;
+}>;
 const ComponentSection = ({ title, children }: ComponentSectionProps) => {
 	return (
-		<section className="space-y-4">
-			<h2 className="text-lg font-semibold text-foreground">{title}</h2>
-			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+		<section className='space-y-4'>
+			<h2 className='text-lg font-semibold text-foreground'>{title}</h2>
+			<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'>
 				{children}
 			</div>
 		</section>
-	)
-}
+	);
+};
 
 type VariantCardProps = PropsWithChildren<{
-	label: string
-}>
+	label: string;
+}>;
 const VariantCard = ({ label, children }: VariantCardProps) => {
 	return (
-		<div className="flex flex-col items-center gap-2 rounded-lg border border-border bg-card p-4">
-			<div className="flex min-h-10 items-center gap-2">{children}</div>
-			<span className="text-xs text-muted-foreground">{label}</span>
+		<div className='flex flex-col items-center gap-2 rounded-lg border border-border bg-card p-4'>
+			<span className='text-xs text-muted-foreground'>{label}</span>
+			<div className='flex h-full items-center gap-2'>
+				<div className='in-[.show-occupying-space]:bg-foreground/10'>
+					{children}
+				</div>
+			</div>
 		</div>
-	)
-}
+	);
+};
 
 export const App = () => {
+	const [showOccupyingSpace, setShowOccupyingSpace] = useState(false);
+
 	return (
-		<main className="min-h-screen bg-background p-8">
-			<div className="mx-auto max-w-3xl space-y-12">
-				<header className="space-y-2">
-					<h1 className="text-2xl font-bold text-foreground">
-						@betof/component-lib
+		<main
+			className={cn(
+				'min-h-screen bg-background p-8',
+				showOccupyingSpace ? 'show-occupying-space' : '',
+			)}
+		>
+			<div className='mx-auto max-w-3xl space-y-12'>
+				<header className='space-y-2'>
+					<h1 className='text-2xl font-bold text-foreground'>
+						@betof-997/component-lib
 					</h1>
-					<p className="text-muted-foreground">
+					<p className='text-muted-foreground'>
 						A collection of reusable components
 					</p>
 				</header>
 
-				<div className="space-y-12">
-					<ComponentSection title="Button - Variants">
-						<VariantCard label="primary (default)">
+				<div className='flex items-center gap-2'>
+					<Button onClick={() => setShowOccupyingSpace(!showOccupyingSpace)}>
+						{showOccupyingSpace
+							? 'Hide occupying space'
+							: 'Show occupying space'}
+					</Button>
+				</div>
+
+				<div className='space-y-12'>
+					<ComponentSection title='TextInput'>
+						<VariantCard label='default'>
+							<TextInput name='text-input' />
+						</VariantCard>
+						<VariantCard label='with label'>
+							<TextInput
+								name='text-input'
+								label='Text Input'
+								description='This is a text input'
+							/>
+						</VariantCard>
+						<VariantCard label='with description'>
+							<TextInput
+								name='text-input'
+								label='Text Input'
+								description='This is a text input'
+							/>
+						</VariantCard>
+						<VariantCard label='with label, description and errors'>
+							<TextInput
+								name='text-input'
+								label='Text Input'
+								description='This is a text input'
+								errors={['This is an error']}
+								showErrors
+							/>
+						</VariantCard>
+					</ComponentSection>
+
+					<ComponentSection title='Button - Variants'>
+						<VariantCard label='primary (default)'>
 							<Button>Primary</Button>
 						</VariantCard>
-						<VariantCard label="secondary">
-							<Button variant="secondary">Secondary</Button>
+						<VariantCard label='secondary'>
+							<Button variant='secondary'>Secondary</Button>
 						</VariantCard>
-						<VariantCard label="destructive">
-							<Button variant="destructive">Destructive</Button>
+						<VariantCard label='destructive'>
+							<Button variant='destructive'>Destructive</Button>
 						</VariantCard>
-						<VariantCard label="link">
-							<Button variant="link">Link</Button>
-						</VariantCard>
-					</ComponentSection>
-
-					<ComponentSection title="Button - Sizes">
-						<VariantCard label="xxs">
-							<Button size="xxs">XXS</Button>
-						</VariantCard>
-						<VariantCard label="xs">
-							<Button size="xs">XS</Button>
-						</VariantCard>
-						<VariantCard label="sm">
-							<Button size="sm">Small</Button>
-						</VariantCard>
-						<VariantCard label="md (default)">
-							<Button size="md">Medium</Button>
-						</VariantCard>
-						<VariantCard label="lg">
-							<Button size="lg">Large</Button>
+						<VariantCard label='link'>
+							<Button variant='link'>Link</Button>
 						</VariantCard>
 					</ComponentSection>
 
-					<ComponentSection title="Button - Outlined">
-						<VariantCard label="primary outlined">
+					<ComponentSection title='Button - Sizes'>
+						<VariantCard label='xxs'>
+							<Button size='xxs'>XXS</Button>
+						</VariantCard>
+						<VariantCard label='xs'>
+							<Button size='xs'>XS</Button>
+						</VariantCard>
+						<VariantCard label='sm'>
+							<Button size='sm'>Small</Button>
+						</VariantCard>
+						<VariantCard label='md (default)'>
+							<Button size='md'>Medium</Button>
+						</VariantCard>
+						<VariantCard label='lg'>
+							<Button size='lg'>Large</Button>
+						</VariantCard>
+					</ComponentSection>
+
+					<ComponentSection title='Button - Outlined'>
+						<VariantCard label='primary outlined'>
 							<Button isOutlined>Primary</Button>
 						</VariantCard>
-						<VariantCard label="secondary outlined">
-							<Button variant="secondary" isOutlined>Secondary</Button>
+						<VariantCard label='secondary outlined'>
+							<Button
+								variant='secondary'
+								isOutlined
+							>
+								Secondary
+							</Button>
 						</VariantCard>
-						<VariantCard label="destructive outlined">
-							<Button variant="destructive" isOutlined>Destructive</Button>
+						<VariantCard label='destructive outlined'>
+							<Button
+								variant='destructive'
+								isOutlined
+							>
+								Destructive
+							</Button>
 						</VariantCard>
 					</ComponentSection>
 
-					<ComponentSection title="Button - Ghost">
-						<VariantCard label="primary ghost">
+					<ComponentSection title='Button - Ghost'>
+						<VariantCard label='primary ghost'>
 							<Button isGhost>Primary</Button>
 						</VariantCard>
-						<VariantCard label="secondary ghost">
-							<Button variant="secondary" isGhost>Secondary</Button>
+						<VariantCard label='secondary ghost'>
+							<Button
+								variant='secondary'
+								isGhost
+							>
+								Secondary
+							</Button>
 						</VariantCard>
-						<VariantCard label="destructive ghost">
-							<Button variant="destructive" isGhost>Destructive</Button>
+						<VariantCard label='destructive ghost'>
+							<Button
+								variant='destructive'
+								isGhost
+							>
+								Destructive
+							</Button>
 						</VariantCard>
 					</ComponentSection>
 
-					<ComponentSection title="Button - Rounded">
-						<VariantCard label="xxs rounded">
-							<Button size="xxs" isRounded>A</Button>
+					<ComponentSection title='Button - Rounded'>
+						<VariantCard label='xxs rounded'>
+							<Button
+								size='xxs'
+								isRounded
+							>
+								A
+							</Button>
 						</VariantCard>
-						<VariantCard label="xs rounded">
-							<Button size="xs" isRounded>A</Button>
+						<VariantCard label='xs rounded'>
+							<Button
+								size='xs'
+								isRounded
+							>
+								A
+							</Button>
 						</VariantCard>
-						<VariantCard label="sm rounded">
-							<Button size="sm" isRounded>A</Button>
+						<VariantCard label='sm rounded'>
+							<Button
+								size='sm'
+								isRounded
+							>
+								A
+							</Button>
 						</VariantCard>
-						<VariantCard label="md rounded">
-							<Button size="md" isRounded>A</Button>
+						<VariantCard label='md rounded'>
+							<Button
+								size='md'
+								isRounded
+							>
+								A
+							</Button>
 						</VariantCard>
-						<VariantCard label="lg rounded">
-							<Button size="lg" isRounded>A</Button>
+						<VariantCard label='lg rounded'>
+							<Button
+								size='lg'
+								isRounded
+							>
+								A
+							</Button>
 						</VariantCard>
-						<VariantCard label="rounded + outlined">
-							<Button size="md" isRounded isOutlined>A</Button>
+						<VariantCard label='rounded + outlined'>
+							<Button
+								size='md'
+								isRounded
+								isOutlined
+							>
+								A
+							</Button>
 						</VariantCard>
 					</ComponentSection>
 				</div>
 			</div>
 		</main>
-	)
-}
+	);
+};

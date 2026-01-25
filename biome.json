@@ -33,7 +33,11 @@
 				"useArrowFunction": "error"
 			},
 			"suspicious": {
-				"noConsole": "error"
+				"noConsole": "error",
+				"noArrayIndexKey": "off"
+			},
+			"a11y": {
+				"useSemanticElements": "off"
 			}
 		}
 	},
@@ -52,11 +56,6 @@
 		}
 	},
 	"assist": {
-		"enabled": true,
-		"actions": {
-			"source": {
-				"organizeImports": "on"
-			}
-		}
+		"enabled": false
 	}
 }
