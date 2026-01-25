@@ -1,0 +1,269 @@
+---
+alwaysApply: true
+---
+# Component File Structure
+
+This document describes the file structure conventions for components in this design system.
+
+## Overview
+
+Components are organized into three categories based on complexity:
+
+1. **Simple Components** - Single-purpose components with no sub-components
+2. **Complex Components** - Components with multiple exportable sub-components
+3. **Compound Components** - Components with scoped sub-components (not individually exportable)
+
+---
+
+## 1. Simple Component
+
+A simple component is a standalone component without sub-components.
+
+### Structure
+
+```
+component-name/
+├── ComponentName.tsx      # Main component implementation
+├── types.ts               # **ALL** Type definitions
+├── consts.ts              # Constants, variants (cva), configuration (optional)
+├── index.ts               # Barrel exports
+```
+
+### Example: Button
+
+```
+button/
+├── Button.tsx
+├── types.ts
+├── consts.ts
+├── index.ts
+```
+
+### File Contents
+
+**index.ts** - Exports the component, variants, and types:
+
+```ts
+export { Button } from './Button'
+export { buttonVariants } from './consts'
+export type { ButtonProps, ButtonVariant, ButtonSize } from './types'
+```
+
+**types.ts** - Contains all type definitions:
+
+```ts
+import type { VariantProps } from 'class-variance-authority'
+import type { buttonVariants } from './consts'
+
+export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>['variant']>
+export type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>
+export type ButtonProps = /* ... */
+```
+
+**consts.ts** - Contains variants and constants:
+
+```ts
+import { cva } from 'class-variance-authority'
+
+export const buttonVariants = cva(/* ... */)
+```
+
+---
+
+## 2. Complex Component
+
+A complex component has multiple sub-components that are **individually exportable** and can be used independently.
+
+### Structure
+
+```
+component-name/
+├── index.ts               # Barrel exports from sub-components
+├── ComponentName.tsx      # Main component (optional, some might only have sub-components)
+├── utils.ts               # Shared utilities (optional)
+└── sub-components/
+    ├── sub-component-a/
+    │   ├── SubComponentA.tsx
+    │   ├── types.ts        # (optional)
+    │   ├── consts.ts       # (optional)
+    │   └── index.ts
+    ├── sub-component-b/
+    │   ├── SubComponentB.tsx
+    │   ├── types.ts
+    │   └── index.ts
+    └── ...
+```
+
+### Example: Form
+
+```
+form/
+├── index.ts
+├── utils.ts
+└── sub-components/
+    ├── form-description/
+    │   ├── FormDescription.tsx
+    │   ├── types.ts
+    │   └── index.ts
+    ├── form-field-group/
+    │   ├── FormFieldGroup.tsx
+    │   ├── types.ts
+    │   └── index.ts
+    ├── form-legend/
+    │   ├── FormLegend.tsx
+    │   ├── types.ts
+    │   ├── consts.ts
+    │   └── index.ts
+    └── ...
+```
+
+### File Contents
+
+**index.ts** - Re-exports all sub-components and their types:
+
+```ts
+export { FormDescription, type FormDescriptionProps } from './sub-components/form-description'
+export { FormFieldGroup, type FormFieldGroupProps } from './sub-components/form-field-group'
+export { FormLegend, formLegendVariants, type FormLegendProps } from './sub-components/form-legend'
+export { zodEnumToItems } from './utils'
+```
+
+**sub-components/sub-component-name/index.ts** - Exports the sub-component and its types:
+
+```ts
+export { FormDescription } from './FormDescription'
+export type { FormDescriptionProps } from './types'
+```
+
+**sub-components/sub-component-name/types.ts** - Contains type definitions for that sub-component:
+
+```ts
+import type { PropsWithChildren } from 'react'
+
+export type FormDescriptionProps = PropsWithChildren<{
+  className?: string
+}>
+```
+
+### When to Use
+
+Use this pattern when:
+
+- Sub-components can be used independently
+- Sub-components have their own props and logic
+- Users may import sub-components separately
+- If a parent component has too many scoped sub-components, they can be extracted as well
+
+---
+
+## 3. Compound Component
+
+A compound component has sub-components that are **scoped** and accessed through the main component object. Sub-components are not meant to be used independently.
+
+### Structure
+
+```
+component-name/
+├── ComponentName.tsx      # Contains all sub-components, exports as object
+├── types.ts               # Type definitions for all sub-components
+├── index.ts               # Barrel exports
+```
+
+### Example: Popover
+
+```
+popover/
+├── Popover.tsx
+├── types.ts
+├── index.ts
+```
+
+### File Contents
+
+**ComponentName.tsx** - Contains all sub-components and exports them as an object:
+
+```tsx
+const Root = (props: PopoverRootProps) => {
+  return <PopoverRoot data-slot='popover' {...props} />
+}
+
+const Trigger = (props: PopoverTriggerProps) => {
+  return <PopoverTrigger data-slot='popover-trigger' {...props} />
+}
+
+const Content = ({ className, ...props }: PopoverContentProps) => {
+  return (
+    <PopoverPortal>
+      <PopoverContent className={cn(/* ... */, className)} {...props} />
+    </PopoverPortal>
+  )
+}
+
+export const Popover = {
+  Root,
+  Trigger,
+  Content,
+}
+```
+
+**types.ts** - Contains type definitions for all sub-components:
+
+```ts
+import type { ComponentProps } from 'react'
+import type * as PopoverPrimitive from '@radix-ui/react-popover'
+
+export type PopoverRootProps = ComponentProps<typeof PopoverPrimitive.Root>
+export type PopoverTriggerProps = ComponentProps<typeof PopoverPrimitive.Trigger>
+export type PopoverContentProps = ComponentProps<typeof PopoverPrimitive.Content>
+```
+
+**index.ts** - Exports the main component and all types:
+
+```ts
+export { Popover } from './Popover'
+export type {
+  PopoverRootProps,
+  PopoverTriggerProps,
+  PopoverContentProps,
+} from './types'
+```
+
+### Usage
+
+```tsx
+<Popover.Root>
+  <Popover.Trigger>Open</Popover.Trigger>
+  <Popover.Content>Content here</Popover.Content>
+</Popover.Root>
+```
+
+### When to Use
+
+Use this pattern when:
+
+- Sub-components are tightly coupled and always used together
+- Sub-components don't make sense on their own
+- You want to provide a namespaced API (e.g., `Popover.Root`, `Popover.Content`) **PREFERED**
+
+---
+
+## Naming Conventions
+
+
+| Item           | Convention             | Example                             |
+| ---------------- | ------------------------ | ------------------------------------- |
+| Folder name    | kebab-case             | `button/`, `form-description/`      |
+| Component file | PascalCase             | `Button.tsx`, `FormDescription.tsx` |
+| Types file     | kebab-case             | `types.ts`                          |
+| Constants file | kebab-case             | `consts.ts`                         |
+| Index file     | lowercase              | `index.ts`                          |
+
+---
+
+## Summary
+
+| Pattern  | Sub-components Location   | Export Style               | Use Case                                                                |
+| -------- | ------------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| Simple   | None                      | Direct export              | Single-purpose components                                               |
+| Complex  | `sub-components/` folders | Re-export from sub-folders | Independently usable parts or extracted from large Parent Components    |
+| Compound | Same file as object       | Object with sub-components | Tightly coupled parts that don't make sense on their own    
