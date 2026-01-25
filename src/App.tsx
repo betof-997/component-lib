@@ -3,15 +3,29 @@ import { useState } from 'react';
 import { Button } from './components/button';
 import { TextInput } from './components/text-input';
 import { cn } from './lib/utils';
+import { Form } from './components/form';
+import { useAppForm } from './hooks/use-app-form';
+import { SubmitButton } from './components/submit-button/SubmitButton';
+import z from 'zod';
 
 type ComponentSectionProps = PropsWithChildren<{
 	title: string;
+	singleColumn?: boolean;
 }>;
-const ComponentSection = ({ title, children }: ComponentSectionProps) => {
+const ComponentSection = ({
+	title,
+	children,
+	singleColumn = false,
+}: ComponentSectionProps) => {
 	return (
 		<section className='space-y-4'>
 			<h2 className='text-lg font-semibold text-foreground'>{title}</h2>
-			<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'>
+			<div
+				className={cn(
+					'grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4',
+					singleColumn ? 'grid-cols-1' : '',
+				)}
+			>
 				{children}
 			</div>
 		</section>
@@ -20,13 +34,23 @@ const ComponentSection = ({ title, children }: ComponentSectionProps) => {
 
 type VariantCardProps = PropsWithChildren<{
 	label: string;
+	fullWidth?: boolean;
 }>;
-const VariantCard = ({ label, children }: VariantCardProps) => {
+const VariantCard = ({
+	label,
+	children,
+	fullWidth = false,
+}: VariantCardProps) => {
 	return (
-		<div className='flex flex-col items-center gap-2 rounded-lg border border-border bg-card p-4'>
+		<div className='flex flex-col items-center gap-2 rounded-lg border border-border bg-card p-4 w-full'>
 			<span className='text-xs text-muted-foreground'>{label}</span>
-			<div className='flex h-full items-center gap-2'>
-				<div className='in-[.show-occupying-space]:bg-foreground/10'>
+			<div
+				className={cn(
+					'flex h-full items-center gap-2',
+					fullWidth ? 'w-full' : '',
+				)}
+			>
+				<div className='in-[.show-occupying-space]:bg-foreground/10 w-full'>
 					{children}
 				</div>
 			</div>
@@ -36,6 +60,19 @@ const VariantCard = ({ label, children }: VariantCardProps) => {
 
 export const App = () => {
 	const [showOccupyingSpace, setShowOccupyingSpace] = useState(false);
+	const form = useAppForm({
+		defaultValues: {
+			name: '',
+		},
+		validators: {
+			onChange: z.object({
+				name: z.string().min(1),
+			}),
+		},
+		onSubmit: ({ value }) => {
+			alert(JSON.stringify(value));
+		},
+	});
 
 	return (
 		<main
@@ -63,6 +100,27 @@ export const App = () => {
 				</div>
 
 				<div className='space-y-12'>
+					<ComponentSection
+						title='Form'
+						singleColumn={true}
+					>
+						<VariantCard
+							label='default'
+							fullWidth={true}
+						>
+							<Form.Root form={form}>
+								<Form.Group>
+									<form.AppField
+										name='name'
+										children={(field) => <field.TextInput label='Name' />}
+									/>
+								</Form.Group>
+
+								<SubmitButton>Submit</SubmitButton>
+							</Form.Root>
+						</VariantCard>
+					</ComponentSection>
+
 					<ComponentSection title='TextInput'>
 						<VariantCard label='default'>
 							<TextInput name='text-input' />

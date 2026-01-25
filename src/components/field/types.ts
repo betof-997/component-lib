@@ -10,8 +10,8 @@ export type BaseFieldDescriptionProps = ComponentProps<'p'>;
 export type BaseFieldErrorProps = Omit<ComponentProps<'div'>, 'children'> &
 	Pick<BaseFieldInputProps<unknown>, 'errors' | 'showErrors'>;
 
-type BaseFieldInputProps<TValue> = {
-	name: string;
+export type BaseFieldInputProps<TValue> = {
+	name?: string;
 	label?: string;
 	description?: string;
 
@@ -19,11 +19,24 @@ type BaseFieldInputProps<TValue> = {
 	onChange?: (value: TValue) => void;
 	onBlur?: () => void;
 
+	isDisabled?: boolean;
+	isRequired?: boolean;
+	isReadOnly?: boolean;
+
 	errors?: string[];
 	showErrors?: boolean;
 };
 export type BaseInputProps<TValue, TProps> = Omit<
 	TProps,
-	keyof BaseFieldInputProps<TValue>
+	| keyof BaseFieldInputProps<TValue>
+	| 'form'
+	| 'disabled'
+	| 'required'
+	| 'readOnly'
 > &
 	BaseFieldInputProps<TValue>;
+
+export type UseBaseFieldParams = Pick<
+	BaseFieldInputProps<unknown>,
+	'errors' | 'showErrors' | 'isDisabled' | 'isRequired' | 'isReadOnly'
+>;

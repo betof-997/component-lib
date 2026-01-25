@@ -1,4 +1,15 @@
-import type { ComponentProps, ReactNode } from 'react';
+import type { AnyFormApi } from '@tanstack/react-form';
+import type { ComponentProps, ComponentType, ReactNode } from 'react';
+
+export type FormRootProps = {
+	className?: string;
+	children?: ReactNode;
+	form: AnyFormApi & {
+		AppForm: ComponentType<{
+			children?: ReactNode | undefined;
+		}>;
+	};
+};
 
 export type FormSetProps = ComponentProps<'fieldset'>;
 

@@ -3,10 +3,31 @@ import { cn } from '@/lib/utils';
 import type {
 	FormGroupProps,
 	FormLegendProps,
+	FormRootProps,
 	FormSeparatorProps,
 	FormSetProps,
 	FormTitleProps,
 } from './types';
+import type { FormEvent } from 'react';
+
+const FormRoot = ({ className, children, form: formApi }: FormRootProps) => {
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		event.stopPropagation();
+		formApi.handleSubmit();
+	};
+
+	return (
+		<formApi.AppForm>
+			<form
+				className={cn('w-full', className)}
+				onSubmit={handleSubmit}
+			>
+				{children}
+			</form>
+		</formApi.AppForm>
+	);
+};
 
 const FormSet = ({ className, ...props }: FormSetProps) => {
 	return (
@@ -94,6 +115,7 @@ const FormSeparator = ({
 };
 
 export const Form = {
+	Root: FormRoot,
 	Set: FormSet,
 	Legend,
 	Group,

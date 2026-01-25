@@ -38,6 +38,9 @@
 			},
 			"a11y": {
 				"useSemanticElements": "off"
+			},
+			"correctness": {
+				"noChildrenProp": "off"
 			}
 		}
 	},
