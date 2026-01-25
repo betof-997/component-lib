@@ -1,4 +1,4 @@
-import type { BaseFieldInputProps } from '@/components/field/types';
+import type { BaseFieldInputProps } from '@/components/base-field/types';
 import type { FC } from 'react';
 import { useFieldContext } from './contexts';
 import { formatFormInputWrapperErrors } from './utils';

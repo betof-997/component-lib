@@ -32,7 +32,7 @@ function TextInputPage() {
 				<Docs.Preview>
 					<TextInput
 						label='Required'
-						isRequired={true}
+						required={true}
 						placeholder='This field is required'
 					/>
 					<TextInput
@@ -43,12 +43,12 @@ function TextInputPage() {
 					/>
 					<TextInput
 						label='Disabled'
-						isDisabled={true}
+						disabled={true}
 						value='Cannot edit this'
 					/>
 					<TextInput
 						label='Read Only'
-						isReadOnly={true}
+						readOnly={true}
 						value='Read only value'
 					/>
 				</Docs.Preview>
@@ -66,7 +66,7 @@ function TextInputPage() {
 
 <TextInput
   label="Name"
-  isRequired={true}
+  required={true}
   errors={['Name is required']}
   showErrors={true}
 />`}</Docs.Code>
@@ -112,19 +112,19 @@ function TextInputPage() {
 							description: 'Placeholder text shown when the input is empty',
 						},
 						{
-							name: 'isRequired',
+							name: 'required',
 							type: 'boolean',
 							default: 'false',
 							description: 'Marks the input as required',
 						},
 						{
-							name: 'isDisabled',
+							name: 'disabled',
 							type: 'boolean',
 							default: 'false',
 							description: 'Disables the input',
 						},
 						{
-							name: 'isReadOnly',
+							name: 'readOnly',
 							type: 'boolean',
 							default: 'false',
 							description: 'Makes the input read-only',

@@ -19,9 +19,9 @@ export type BaseFieldInputProps<TValue> = {
 	onChange?: (value: TValue) => void;
 	onBlur?: () => void;
 
-	isDisabled?: boolean;
-	isRequired?: boolean;
-	isReadOnly?: boolean;
+	disabled?: boolean;
+	required?: boolean;
+	readOnly?: boolean;
 
 	errors?: string[];
 	showErrors?: boolean;
@@ -38,5 +38,5 @@ export type BaseInputProps<TValue, TProps> = Omit<
 
 export type UseBaseFieldParams = Pick<
 	BaseFieldInputProps<unknown>,
-	'errors' | 'showErrors' | 'isDisabled' | 'isRequired' | 'isReadOnly'
+	'errors' | 'showErrors' | 'disabled' | 'required' | 'readOnly'
 >;

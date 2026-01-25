@@ -1,8 +1,8 @@
 import { cn } from '@/lib/utils';
 import type { ChangeEvent } from 'react';
 import { useId } from 'react';
-import { BaseField } from '../field';
-import { useBaseField } from '../field/useBaseField';
+import { BaseField } from '../base-field';
+import { useBaseField } from '../base-field/useBaseField';
 import type { TextInputProps } from './types';
 
 export const TextInput = ({
@@ -14,9 +14,9 @@ export const TextInput = ({
 	description,
 	errors,
 	showErrors,
-	isDisabled,
-	isRequired,
-	isReadOnly,
+	disabled,
+	required,
+	readOnly,
 	...props
 }: TextInputProps) => {
 	const baseId = useId();
@@ -25,9 +25,9 @@ export const TextInput = ({
 	const { inputProps } = useBaseField({
 		errors,
 		showErrors,
-		isDisabled,
-		isRequired,
-		isReadOnly,
+		disabled,
+		required,
+		readOnly,
 	});
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
