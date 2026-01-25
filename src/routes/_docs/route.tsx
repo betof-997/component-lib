@@ -16,6 +16,7 @@ const NAV_ITEMS = [
 			{ label: 'Button', href: '/button' },
 			{ label: 'Form', href: '/form' },
 			{ label: 'Text Input', href: '/text-input' },
+			{ label: 'Select', href: '/select' },
 		],
 	},
 ];

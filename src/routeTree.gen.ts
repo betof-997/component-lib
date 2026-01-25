@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DocsRouteRouteImport } from './routes/_docs/route'
 import { Route as DocsIndexRouteImport } from './routes/_docs/index'
 import { Route as DocsTextInputRouteRouteImport } from './routes/_docs/text-input/route'
+import { Route as DocsSelectRouteRouteImport } from './routes/_docs/select/route'
 import { Route as DocsFormRouteRouteImport } from './routes/_docs/form/route'
 import { Route as DocsButtonRouteRouteImport } from './routes/_docs/button/route'
 
@@ -29,6 +30,11 @@ const DocsTextInputRouteRoute = DocsTextInputRouteRouteImport.update({
   path: '/text-input',
   getParentRoute: () => DocsRouteRoute,
 } as any)
+const DocsSelectRouteRoute = DocsSelectRouteRouteImport.update({
+  id: '/select',
+  path: '/select',
+  getParentRoute: () => DocsRouteRoute,
+} as any)
 const DocsFormRouteRoute = DocsFormRouteRouteImport.update({
   id: '/form',
   path: '/form',
@@ -44,11 +50,13 @@ export interface FileRoutesByFullPath {
   '/': typeof DocsIndexRoute
   '/button': typeof DocsButtonRouteRoute
   '/form': typeof DocsFormRouteRoute
+  '/select': typeof DocsSelectRouteRoute
   '/text-input': typeof DocsTextInputRouteRoute
 }
 export interface FileRoutesByTo {
   '/button': typeof DocsButtonRouteRoute
   '/form': typeof DocsFormRouteRoute
+  '/select': typeof DocsSelectRouteRoute
   '/text-input': typeof DocsTextInputRouteRoute
   '/': typeof DocsIndexRoute
 }
@@ -57,19 +65,21 @@ export interface FileRoutesById {
   '/_docs': typeof DocsRouteRouteWithChildren
   '/_docs/button': typeof DocsButtonRouteRoute
   '/_docs/form': typeof DocsFormRouteRoute
+  '/_docs/select': typeof DocsSelectRouteRoute
   '/_docs/text-input': typeof DocsTextInputRouteRoute
   '/_docs/': typeof DocsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/button' | '/form' | '/text-input'
+  fullPaths: '/' | '/button' | '/form' | '/select' | '/text-input'
   fileRoutesByTo: FileRoutesByTo
-  to: '/button' | '/form' | '/text-input' | '/'
+  to: '/button' | '/form' | '/select' | '/text-input' | '/'
   id:
     | '__root__'
     | '/_docs'
     | '/_docs/button'
     | '/_docs/form'
+    | '/_docs/select'
     | '/_docs/text-input'
     | '/_docs/'
   fileRoutesById: FileRoutesById
@@ -101,6 +111,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsTextInputRouteRouteImport
       parentRoute: typeof DocsRouteRoute
     }
+    '/_docs/select': {
+      id: '/_docs/select'
+      path: '/select'
+      fullPath: '/select'
+      preLoaderRoute: typeof DocsSelectRouteRouteImport
+      parentRoute: typeof DocsRouteRoute
+    }
     '/_docs/form': {
       id: '/_docs/form'
       path: '/form'
@@ -121,6 +138,7 @@ declare module '@tanstack/react-router' {
 interface DocsRouteRouteChildren {
   DocsButtonRouteRoute: typeof DocsButtonRouteRoute
   DocsFormRouteRoute: typeof DocsFormRouteRoute
+  DocsSelectRouteRoute: typeof DocsSelectRouteRoute
   DocsTextInputRouteRoute: typeof DocsTextInputRouteRoute
   DocsIndexRoute: typeof DocsIndexRoute
 }
@@ -128,6 +146,7 @@ interface DocsRouteRouteChildren {
 const DocsRouteRouteChildren: DocsRouteRouteChildren = {
   DocsButtonRouteRoute: DocsButtonRouteRoute,
   DocsFormRouteRoute: DocsFormRouteRoute,
+  DocsSelectRouteRoute: DocsSelectRouteRoute,
   DocsTextInputRouteRoute: DocsTextInputRouteRoute,
   DocsIndexRoute: DocsIndexRoute,
 }
