@@ -70,7 +70,7 @@ function DocsLayout() {
 					</span>
 				</div>
 
-				<div className='docs-content p-6 md:p-10'>
+				<div className='max-w-4xl mx-auto space-y-8 p-6 md:p-10'>
 					<Outlet />
 				</div>
 			</main>
