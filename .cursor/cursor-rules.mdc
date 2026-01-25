@@ -13,6 +13,11 @@ this is a component lib that uses shadcn as a base for creating components
 - Pnpm
 - Biome
 
+## Scripts
+
+- pnpm run dev: starts dev server **DONT RUN UNLESS EXPLICIT TOLD TO**
+- pnpm run build: builds project with vite+nitro **DONT RUN UNLESS EXPLICIT TOLD TO**
+
 ## React Component Rules
 
 - Only put one React component per file, except for small helper
