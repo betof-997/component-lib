@@ -124,3 +124,95 @@
 		@apply font-sans bg-background text-foreground;
 	}
 }
+
+@layer components {
+	.docs-content {
+		@apply max-w-4xl mx-auto;
+	}
+
+	.docs-page {
+		@apply space-y-8;
+	}
+
+	.docs-header {
+		@apply space-y-2 pb-4 border-b border-border;
+	}
+
+	.docs-header h1 {
+		@apply text-3xl font-bold tracking-tight;
+	}
+
+	.docs-description {
+		@apply text-muted-foreground text-lg;
+	}
+
+	.docs-section {
+		@apply space-y-4;
+	}
+
+	.docs-section h2 {
+		@apply text-xl font-semibold tracking-tight;
+	}
+
+	.docs-section p {
+		@apply text-muted-foreground;
+	}
+
+	.docs-preview {
+		@apply flex flex-wrap gap-3 p-6 rounded-lg border border-border bg-card;
+	}
+
+	.docs-code {
+		@apply p-4 rounded-lg bg-muted text-sm font-mono overflow-x-auto;
+	}
+
+	.docs-code code {
+		@apply whitespace-pre;
+	}
+
+	.docs-list {
+		@apply list-disc list-inside space-y-1 text-muted-foreground;
+	}
+
+	.docs-list li strong {
+		@apply text-foreground;
+	}
+
+	.docs-list li code {
+		@apply px-1.5 py-0.5 rounded bg-muted text-sm font-mono;
+	}
+
+	.docs-table-wrapper {
+		@apply overflow-x-auto rounded-lg border border-border;
+	}
+
+	.docs-table {
+		@apply w-full text-sm;
+	}
+
+	.docs-table thead {
+		@apply bg-muted;
+	}
+
+	.docs-table th {
+		@apply px-4 py-3 text-left font-medium;
+	}
+
+	.docs-table td {
+		@apply px-4 py-3 border-t border-border;
+	}
+
+	.docs-table code {
+		@apply px-1.5 py-0.5 rounded bg-muted text-sm font-mono;
+	}
+
+	/* Scrollbar styles for sidebar */
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+}

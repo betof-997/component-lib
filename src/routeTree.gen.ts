@@ -9,50 +9,135 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsRouteRouteImport } from './routes/_docs/route'
+import { Route as DocsIndexRouteImport } from './routes/_docs/index'
+import { Route as DocsTextInputRouteRouteImport } from './routes/_docs/text-input/route'
+import { Route as DocsFormRouteRouteImport } from './routes/_docs/form/route'
+import { Route as DocsButtonRouteRouteImport } from './routes/_docs/button/route'
 
-const IndexRoute = IndexRouteImport.update({
+const DocsRouteRoute = DocsRouteRouteImport.update({
+  id: '/_docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsIndexRoute = DocsIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DocsRouteRoute,
+} as any)
+const DocsTextInputRouteRoute = DocsTextInputRouteRouteImport.update({
+  id: '/text-input',
+  path: '/text-input',
+  getParentRoute: () => DocsRouteRoute,
+} as any)
+const DocsFormRouteRoute = DocsFormRouteRouteImport.update({
+  id: '/form',
+  path: '/form',
+  getParentRoute: () => DocsRouteRoute,
+} as any)
+const DocsButtonRouteRoute = DocsButtonRouteRouteImport.update({
+  id: '/button',
+  path: '/button',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof DocsIndexRoute
+  '/button': typeof DocsButtonRouteRoute
+  '/form': typeof DocsFormRouteRoute
+  '/text-input': typeof DocsTextInputRouteRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/button': typeof DocsButtonRouteRoute
+  '/form': typeof DocsFormRouteRoute
+  '/text-input': typeof DocsTextInputRouteRoute
+  '/': typeof DocsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_docs': typeof DocsRouteRouteWithChildren
+  '/_docs/button': typeof DocsButtonRouteRoute
+  '/_docs/form': typeof DocsFormRouteRoute
+  '/_docs/text-input': typeof DocsTextInputRouteRoute
+  '/_docs/': typeof DocsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/button' | '/form' | '/text-input'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/button' | '/form' | '/text-input' | '/'
+  id:
+    | '__root__'
+    | '/_docs'
+    | '/_docs/button'
+    | '/_docs/form'
+    | '/_docs/text-input'
+    | '/_docs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  DocsRouteRoute: typeof DocsRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_docs': {
+      id: '/_docs'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof DocsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_docs/': {
+      id: '/_docs/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DocsIndexRouteImport
+      parentRoute: typeof DocsRouteRoute
+    }
+    '/_docs/text-input': {
+      id: '/_docs/text-input'
+      path: '/text-input'
+      fullPath: '/text-input'
+      preLoaderRoute: typeof DocsTextInputRouteRouteImport
+      parentRoute: typeof DocsRouteRoute
+    }
+    '/_docs/form': {
+      id: '/_docs/form'
+      path: '/form'
+      fullPath: '/form'
+      preLoaderRoute: typeof DocsFormRouteRouteImport
+      parentRoute: typeof DocsRouteRoute
+    }
+    '/_docs/button': {
+      id: '/_docs/button'
+      path: '/button'
+      fullPath: '/button'
+      preLoaderRoute: typeof DocsButtonRouteRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
   }
 }
 
+interface DocsRouteRouteChildren {
+  DocsButtonRouteRoute: typeof DocsButtonRouteRoute
+  DocsFormRouteRoute: typeof DocsFormRouteRoute
+  DocsTextInputRouteRoute: typeof DocsTextInputRouteRoute
+  DocsIndexRoute: typeof DocsIndexRoute
+}
+
+const DocsRouteRouteChildren: DocsRouteRouteChildren = {
+  DocsButtonRouteRoute: DocsButtonRouteRoute,
+  DocsFormRouteRoute: DocsFormRouteRoute,
+  DocsTextInputRouteRoute: DocsTextInputRouteRoute,
+  DocsIndexRoute: DocsIndexRoute,
+}
+
+const DocsRouteRouteWithChildren = DocsRouteRoute._addFileChildren(
+  DocsRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  DocsRouteRoute: DocsRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
