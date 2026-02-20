@@ -13,6 +13,7 @@ const NAV_ITEMS = [
 	{
 		label: 'Components',
 		items: [
+			{ label: 'Badge', href: '/badge' },
 			{ label: 'Button', href: '/button' },
 			{ label: 'Form', href: '/form' },
 			{ label: 'Popover', href: '/popover' },

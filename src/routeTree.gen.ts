@@ -17,6 +17,7 @@ import { Route as DocsSelectRouteRouteImport } from './routes/_docs/select/route
 import { Route as DocsPopoverRouteRouteImport } from './routes/_docs/popover/route'
 import { Route as DocsFormRouteRouteImport } from './routes/_docs/form/route'
 import { Route as DocsButtonRouteRouteImport } from './routes/_docs/button/route'
+import { Route as DocsBadgeRouteRouteImport } from './routes/_docs/badge/route'
 
 const DocsRouteRoute = DocsRouteRouteImport.update({
   id: '/_docs',
@@ -57,9 +58,15 @@ const DocsButtonRouteRoute = DocsButtonRouteRouteImport.update({
   path: '/button',
   getParentRoute: () => DocsRouteRoute,
 } as any)
+const DocsBadgeRouteRoute = DocsBadgeRouteRouteImport.update({
+  id: '/badge',
+  path: '/badge',
+  getParentRoute: () => DocsRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof DocsIndexRoute
+  '/badge': typeof DocsBadgeRouteRoute
   '/button': typeof DocsButtonRouteRoute
   '/form': typeof DocsFormRouteRoute
   '/popover': typeof DocsPopoverRouteRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/text-input': typeof DocsTextInputRouteRoute
 }
 export interface FileRoutesByTo {
+  '/badge': typeof DocsBadgeRouteRoute
   '/button': typeof DocsButtonRouteRoute
   '/form': typeof DocsFormRouteRoute
   '/popover': typeof DocsPopoverRouteRoute
@@ -79,6 +87,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_docs': typeof DocsRouteRouteWithChildren
+  '/_docs/badge': typeof DocsBadgeRouteRoute
   '/_docs/button': typeof DocsButtonRouteRoute
   '/_docs/form': typeof DocsFormRouteRoute
   '/_docs/popover': typeof DocsPopoverRouteRoute
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/badge'
     | '/button'
     | '/form'
     | '/popover'
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/text-input'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/badge'
     | '/button'
     | '/form'
     | '/popover'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_docs'
+    | '/_docs/badge'
     | '/_docs/button'
     | '/_docs/form'
     | '/_docs/popover'
@@ -180,10 +192,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsButtonRouteRouteImport
       parentRoute: typeof DocsRouteRoute
     }
+    '/_docs/badge': {
+      id: '/_docs/badge'
+      path: '/badge'
+      fullPath: '/badge'
+      preLoaderRoute: typeof DocsBadgeRouteRouteImport
+      parentRoute: typeof DocsRouteRoute
+    }
   }
 }
 
 interface DocsRouteRouteChildren {
+  DocsBadgeRouteRoute: typeof DocsBadgeRouteRoute
   DocsButtonRouteRoute: typeof DocsButtonRouteRoute
   DocsFormRouteRoute: typeof DocsFormRouteRoute
   DocsPopoverRouteRoute: typeof DocsPopoverRouteRoute
@@ -194,6 +214,7 @@ interface DocsRouteRouteChildren {
 }
 
 const DocsRouteRouteChildren: DocsRouteRouteChildren = {
+  DocsBadgeRouteRoute: DocsBadgeRouteRoute,
   DocsButtonRouteRoute: DocsButtonRouteRoute,
   DocsFormRouteRoute: DocsFormRouteRoute,
   DocsPopoverRouteRoute: DocsPopoverRouteRoute,
