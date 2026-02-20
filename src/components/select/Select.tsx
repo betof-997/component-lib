@@ -1,12 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Combobox as ComboboxPrimitive } from '@base-ui/react';
-import { CheckIcon, ChevronDownIcon, XIcon } from 'lucide-react';
-import * as React from 'react';
+import { CheckIcon, ChevronDownIcon } from 'lucide-react';
 import type {
-	SelectChipProps,
-	SelectChipsInputProps,
-	SelectChipsProps,
-	SelectCollectionProps,
 	SelectContentProps,
 	SelectEmptyProps,
 	SelectGroupProps,
@@ -32,6 +27,7 @@ const Input = ({
 	className,
 	showTrigger = true,
 	disabled = false,
+	placeholder = 'Select an option...',
 	...props
 }: SelectInputProps) => {
 	return (
@@ -46,6 +42,7 @@ const Input = ({
 					'border-input data-placeholder:text-muted-foreground dark:bg-input/30 focus:border-primary aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 disabled:bg-input/50 dark:disabled:bg-input/80 rounded-lg border bg-transparent text-base md:text-sm transition-colors outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 w-full h-8 py-1.5 pr-8 pl-2.5',
 					className,
 				)}
+				placeholder={placeholder}
 				{...props}
 			/>
 			{showTrigger && <Trigger disabled={disabled} />}
@@ -53,10 +50,7 @@ const Input = ({
 	);
 };
 
-const Trigger = ({
-	className,
-	...props
-}: SelectTriggerProps) => {
+const Trigger = ({ className, ...props }: SelectTriggerProps) => {
 	return (
 		<ComboboxPrimitive.Trigger
 			data-slot='select-trigger'
@@ -182,76 +176,6 @@ const Empty = ({ className, ...props }: SelectEmptyProps) => {
 	);
 };
 
-const Collection = ({ ...props }: SelectCollectionProps) => {
-	return (
-		<ComboboxPrimitive.Collection
-			data-slot='select-collection'
-			{...props}
-		/>
-	);
-};
-
-const Chips = ({ className, ...props }: SelectChipsProps) => {
-	return (
-		<ComboboxPrimitive.Chips
-			data-slot='select-chips'
-			className={cn(
-				'dark:bg-input/30 border-input focus-within:border-ring focus-within:ring-ring/50 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive dark:has-aria-invalid:border-destructive/50 flex min-h-8 flex-wrap items-center gap-1 rounded-lg border bg-transparent bg-clip-padding px-2.5 py-1 text-sm transition-colors focus-within:ring-[3px] has-aria-invalid:ring-[3px] has-data-[slot=select-chip]:px-1',
-				className,
-			)}
-			{...props}
-		/>
-	);
-};
-
-const Chip = ({
-	className,
-	children,
-	showRemove = true,
-	...props
-}: SelectChipProps) => {
-	return (
-		<ComboboxPrimitive.Chip
-			data-slot='select-chip'
-			className={cn(
-				'bg-muted text-foreground flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-sm px-1.5 text-xs font-medium whitespace-nowrap has-data-[slot=select-chip-remove]:pr-0 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50',
-				className,
-			)}
-			{...props}
-		>
-			{children}
-			{showRemove && (
-				<ComboboxPrimitive.ChipRemove
-					className='-ml-1 opacity-50 hover:opacity-100'
-					data-slot='select-chip-remove'
-					render={
-						<button
-							type='button'
-							className='flex size-5 items-center justify-center rounded-sm hover:bg-foreground/10'
-						>
-							<XIcon className='pointer-events-none size-3' />
-						</button>
-					}
-				/>
-			)}
-		</ComboboxPrimitive.Chip>
-	);
-};
-
-const ChipsInput = ({ className, ...props }: SelectChipsInputProps) => {
-	return (
-		<ComboboxPrimitive.Input
-			data-slot='select-chips-input'
-			className={cn('min-w-16 flex-1 outline-none', className)}
-			{...props}
-		/>
-	);
-};
-
-export const useSelectAnchor = () => {
-	return React.useRef<HTMLDivElement | null>(null);
-};
-
 export const Select = {
 	Root,
 	Input,
@@ -263,8 +187,4 @@ export const Select = {
 	Label,
 	Separator,
 	Empty,
-	Collection,
-	Chips,
-	Chip,
-	ChipsInput,
 };

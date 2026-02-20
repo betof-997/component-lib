@@ -41,7 +41,7 @@ export const TextInput = ({
 
 			<input
 				type={type}
-				data-slot='text-input'
+				data-slot='input'
 				value={value}
 				onChange={handleChange}
 				className={cn(

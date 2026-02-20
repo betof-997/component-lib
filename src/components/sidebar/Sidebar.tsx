@@ -102,6 +102,7 @@ const Panel = ({
 					'fixed inset-y-0 left-0 z-10 hidden h-svh w-(--sidebar-width) border-r transition-[left,right,width] duration-200 ease-linear md:flex',
 					'group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]',
 					'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
+					'overflow-hidden',
 					className,
 				)}
 				{...props}

@@ -36,17 +36,3 @@ export type SelectSeparatorProps = ComponentProps<
 >;
 
 export type SelectEmptyProps = ComponentProps<typeof ComboboxPrimitive.Empty>;
-
-export type SelectCollectionProps = ComponentProps<
-	typeof ComboboxPrimitive.Collection
->;
-
-export type SelectChipsProps = ComponentProps<typeof ComboboxPrimitive.Chips>;
-
-export type SelectChipProps = ComponentProps<typeof ComboboxPrimitive.Chip> & {
-	showRemove?: boolean;
-};
-
-export type SelectChipsInputProps = ComponentProps<
-	typeof ComboboxPrimitive.Input
->;

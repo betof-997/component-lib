@@ -1,9 +1,5 @@
-export { Select, useSelectAnchor } from './Select';
+export { Select } from './Select';
 export type {
-	SelectChipProps,
-	SelectChipsInputProps,
-	SelectChipsProps,
-	SelectCollectionProps,
 	SelectContentProps,
 	SelectEmptyProps,
 	SelectGroupProps,

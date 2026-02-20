@@ -15,8 +15,12 @@ this is a component lib that uses shadcn as a base for creating components
 
 ## Scripts
 
-- pnpm run dev: starts dev server **DONT RUN UNLESS EXPLICIT TOLD TO**
-- pnpm run build: builds project with vite+nitro **DONT RUN UNLESS EXPLICIT TOLD TO**
+- pnpm run dev: starts dev server
+- pnpm run build: builds project with vite+nitro
+
+## Warnings
+- do not run pnpm scripts unless told to
+- do not run the integrated browser unless told to
 
 ## React Component Rules
 

@@ -16,6 +16,7 @@ const NAV_ITEMS = [
 			{ label: 'Button', href: '/button' },
 			{ label: 'Form', href: '/form' },
 			{ label: 'Text Input', href: '/text-input' },
+			{ label: 'Select Input', href: '/select-input' },
 			{ label: 'Select', href: '/select' },
 		],
 	},
@@ -64,7 +65,7 @@ function DocsLayout() {
 			</Sidebar.Panel>
 
 			<main className='flex-1 overflow-auto'>
-				<div className='flex items-center gap-2 border-b h-14 px-4 md:hidden'>
+				<div className='flex items-center gap-2 border-b h-14 px-4'>
 					<Sidebar.Trigger />
 					<span className='text-primary font-semibold'>
 						@betof-997/component-lib
