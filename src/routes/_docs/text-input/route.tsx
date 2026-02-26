@@ -1,6 +1,7 @@
 import { Docs } from '@/components/docs';
 import { TextInput } from '@/components/text-input';
 import { createFileRoute } from '@tanstack/react-router';
+import { SearchIcon, XIcon } from 'lucide-react';
 
 export const Route = createFileRoute('/_docs/text-input')({
 	component: TextInputPage,
@@ -24,6 +25,31 @@ function TextInputPage() {
 						description='We will never share your email.'
 						placeholder='you@example.com'
 						type='email'
+					/>
+				</Docs.Preview>
+			</Docs.Section>
+
+			<Docs.Section title='With Input Buttons'>
+				<Docs.Preview>
+					<TextInput
+						label='Search'
+						placeholder='Search users...'
+						buttons={[
+							{
+								side: 'left',
+								icon: SearchIcon,
+								label: 'Search users',
+								onClick: () => undefined,
+								isGhost: true,
+							},
+							{
+								side: 'right',
+								icon: XIcon,
+								label: 'Clear search',
+								onClick: () => undefined,
+								isGhost: true,
+							},
+						]}
 					/>
 				</Docs.Preview>
 			</Docs.Section>
@@ -110,6 +136,12 @@ function TextInputPage() {
 							type: 'string',
 							default: '-',
 							description: 'Placeholder text shown when the input is empty',
+						},
+						{
+							name: 'buttons',
+							type: 'InputButton[]',
+							default: '-',
+							description: 'Inline icon buttons rendered inside the input',
 						},
 						{
 							name: 'required',

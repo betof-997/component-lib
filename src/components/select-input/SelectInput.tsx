@@ -20,6 +20,7 @@ export const SelectInput = <TItem extends InputItem>({
 	placeholder = 'Select an option...',
 	emptyMessage = 'No options found',
 	itemRender,
+	buttons,
 	...props
 }: SelectInputProps<TItem>) => {
 	const baseId = useId();
@@ -57,11 +58,14 @@ export const SelectInput = <TItem extends InputItem>({
 				items={items}
 				onValueChange={handleChange}
 				data-slot='input'
-				{...inputProps}
 				{...props}
 				id={id}
 			>
-				<Select.Input placeholder={placeholder} />
+				<Select.Input
+					placeholder={placeholder}
+					buttons={buttons}
+					{...inputProps}
+				/>
 				<Select.Content>
 					<Select.Empty>{emptyMessage}</Select.Empty>
 

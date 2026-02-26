@@ -1,4 +1,7 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ComponentType } from 'react';
+import type { MouseEvent } from 'react';
+import type { LucideProps } from 'lucide-react';
+import type { ButtonProps } from '../button';
 import type { Label } from '@/components/label';
 import type z from 'zod';
 import type { inputItemSchema } from './schemas';
@@ -11,6 +14,18 @@ export type BaseFieldDescriptionProps = ComponentProps<'p'>;
 
 export type BaseFieldErrorProps = Omit<ComponentProps<'div'>, 'children'> &
 	Pick<BaseFieldInputProps<unknown>, 'errors' | 'showErrors'>;
+
+export type BaseFieldInputButtonsProps = {
+	buttons?: InputButton[];
+	side: InputButtonSide;
+	disabled?: boolean;
+	readOnly?: boolean;
+	layout?: 'overlay' | 'inline';
+	onButtonClick?: (
+		event: MouseEvent<HTMLButtonElement>,
+		button: InputButton,
+	) => void;
+} & ComponentProps<'div'>;
 
 export type BaseFieldInputProps<TValue> = {
 	id?: string;
@@ -28,6 +43,7 @@ export type BaseFieldInputProps<TValue> = {
 
 	errors?: string[];
 	showErrors?: boolean;
+	buttons?: InputButton[];
 };
 export type BaseInputProps<TValue, TProps> = Omit<
 	TProps,
@@ -45,6 +61,16 @@ export type WithItemList<TItem extends InputItem> = WithItems<TItem> & {
 	emptyMessage?: string;
 	placeholder?: string;
 };
+
+export type InputButtonSide = 'left' | 'right';
+
+export type InputButton = {
+	side: InputButtonSide;
+	icon: ComponentType<LucideProps>;
+	onClick: () => void;
+	label?: string;
+	canFocus?: boolean;
+} & Pick<ButtonProps, 'variant' | 'disabled' | 'isGhost' | 'isOutlined'>;
 
 export type UseBaseFieldParams = Pick<
 	BaseFieldInputProps<unknown>,

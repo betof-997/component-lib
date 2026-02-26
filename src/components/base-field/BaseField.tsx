@@ -1,9 +1,12 @@
 import { useMemo } from 'react';
+import { Button } from '../button';
+import { inputButtonClassName, inputButtonsSideClassName } from './consts';
 import { Label } from '@/components/label';
 import { cn } from '@/lib/utils';
 import type {
 	BaseFieldDescriptionProps,
 	BaseFieldErrorProps,
+	BaseFieldInputButtonsProps,
 	BaseFieldLabelProps,
 	BaseFieldRootProps,
 } from './types';
@@ -112,9 +115,68 @@ const BaseFieldError = ({
 	);
 };
 
+const InputButtons = ({
+	buttons = [],
+	side,
+	disabled,
+	readOnly,
+	layout = 'overlay',
+	className,
+	onButtonClick,
+	...props
+}: BaseFieldInputButtonsProps) => {
+	const sideButtons = buttons.filter((button) => button.side === side);
+	const hasChildren = !!props.children;
+	if (!sideButtons.length && !hasChildren) {
+		return null;
+	}
+
+	return (
+		<div
+			data-slot='field-input-buttons'
+			className={cn(
+				layout === 'overlay'
+					? cn(inputButtonsSideClassName, side === 'left' ? 'left-0' : 'right-0')
+					: 'flex items-center gap-1',
+				className,
+			)}
+			{...props}
+		>
+			{sideButtons.map((button, index) => {
+				const Icon = button.icon;
+				return (
+					<Button
+						key={`${button.label ?? side}-${index}`}
+						type='button'
+						tabIndex={button.canFocus ? 0 : -1}
+						size='xxs'
+						isRounded={true}
+						variant={button.variant}
+						disabled={disabled || readOnly || button.disabled}
+						isGhost={button.isGhost ?? true}
+						isOutlined={button.isOutlined}
+						className={inputButtonClassName}
+						aria-label={button.label ?? 'Input action'}
+						onClick={(event) => {
+							if (onButtonClick) {
+								onButtonClick(event, button);
+								return;
+							}
+							button.onClick();
+						}}
+					>
+						<Icon />
+					</Button>
+				);
+			})}
+		</div>
+	);
+};
+
 export const BaseField = {
 	Root,
 	Label: BaseFieldLabel,
 	Description,
 	Error: BaseFieldError,
+	InputButtons,
 };

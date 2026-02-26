@@ -2,6 +2,8 @@ import { cn } from '@/lib/utils';
 import type { ChangeEvent } from 'react';
 import { useId } from 'react';
 import { BaseField } from '../base-field';
+import { fieldInputVariants } from '../base-field/consts';
+import { getInputButtonsLayout } from '../base-field/utils';
 import { useBaseField } from '../base-field/useBaseField';
 import type { TextInputProps } from './types';
 
@@ -17,6 +19,8 @@ export const TextInput = ({
 	disabled,
 	required,
 	readOnly,
+	buttons = [],
+	style: inputStyle,
 	...props
 }: TextInputProps) => {
 	const baseId = useId();
@@ -34,24 +38,47 @@ export const TextInput = ({
 		const value = event.target.value || '';
 		onChange?.(value);
 	};
+	const { paddingStyle } = getInputButtonsLayout({
+		buttons,
+	});
 
 	return (
 		<BaseField.Root>
 			<BaseField.Label htmlFor={id}>{label}</BaseField.Label>
 
-			<input
-				type={type}
-				data-slot='input'
-				value={value}
-				onChange={handleChange}
-				className={cn(
-					'dark:bg-input/30 border-input focus-visible:border-primary aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 disabled:bg-input/50 dark:disabled:bg-input/80 h-8 rounded-lg border bg-transparent px-2.5 py-1 text-base transition-colors md:text-sm placeholder:text-muted-foreground w-full min-w-0 outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
-					className,
-				)}
-				{...inputProps}
-				{...props}
-				id={id}
-			/>
+			<div className='relative w-full'>
+				<input
+					type={type}
+					data-slot='input'
+					value={value}
+					onChange={handleChange}
+					className={cn(
+						fieldInputVariants({
+							height: 'fixed',
+							focusMode: 'focusVisible',
+						}),
+						'placeholder:text-muted-foreground',
+						className,
+					)}
+					style={{ ...paddingStyle, ...inputStyle }}
+					{...inputProps}
+					{...props}
+					id={id}
+				/>
+
+				<BaseField.InputButtons
+					buttons={buttons}
+					side='left'
+					disabled={disabled}
+					readOnly={readOnly}
+				/>
+				<BaseField.InputButtons
+					buttons={buttons}
+					side='right'
+					disabled={disabled}
+					readOnly={readOnly}
+				/>
+			</div>
 
 			<BaseField.Description>{description}</BaseField.Description>
 			<BaseField.Error

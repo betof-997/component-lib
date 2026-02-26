@@ -15,11 +15,14 @@ const NAV_ITEMS = [
 		items: [
 			{ label: 'Badge', href: '/badge' },
 			{ label: 'Button', href: '/button' },
+			{ label: 'Checkbox', href: '/checkbox' },
 			{ label: 'Form', href: '/form' },
 			{ label: 'Popover', href: '/popover' },
 			{ label: 'Text Input', href: '/text-input' },
 			{ label: 'Select Input', href: '/select-input' },
+			{ label: 'Multi Select Input', href: '/multi-select-input' },
 			{ label: 'Select', href: '/select' },
+			{ label: 'Switch', href: '/switch' },
 		],
 	},
 ];

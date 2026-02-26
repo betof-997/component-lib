@@ -14,7 +14,7 @@ export const buttonVariants = cva(
 				link: 'text-primary underline-offset-4 hover:underline',
 			},
 			size: {
-				xxs: 'h-6 rounded-md gap-1.5 px-2 text-xs has-[>svg]:px-2',
+				xxs: 'h-5 rounded-md gap-1 px-1.5 text-[11px] has-[>svg]:px-1.5',
 				xs: 'h-7 rounded-md gap-1.5 px-2.5 text-xs has-[>svg]:px-2',
 				sm: 'h-8 rounded-md gap-1.5 px-3 text-xs has-[>svg]:px-2.5',
 				md: 'h-9 px-4 py-2 has-[>svg]:px-3',
@@ -87,7 +87,7 @@ export const buttonVariants = cva(
 			{
 				size: 'xxs',
 				isRounded: true,
-				className: 'w-6 min-w-6',
+				className: 'w-5 min-w-5',
 			},
 			{
 				size: 'xs',

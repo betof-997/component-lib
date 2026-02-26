@@ -1,6 +1,12 @@
 import { cn } from '@/lib/utils';
 import { Combobox as ComboboxPrimitive } from '@base-ui/react';
 import { CheckIcon, ChevronDownIcon } from 'lucide-react';
+import type { LucideProps } from 'lucide-react';
+import { useRef } from 'react';
+import { BaseField } from '../base-field';
+import { fieldInputVariants } from '../base-field/consts';
+import type { InputButton } from '../base-field/types';
+import { getInputButtonsLayout } from '../base-field/utils';
 import type {
 	SelectContentProps,
 	SelectEmptyProps,
@@ -11,7 +17,6 @@ import type {
 	SelectListProps,
 	SelectRootProps,
 	SelectSeparatorProps,
-	SelectTriggerProps,
 } from './types';
 
 const Root = ({ ...props }: SelectRootProps) => {
@@ -23,13 +28,40 @@ const Root = ({ ...props }: SelectRootProps) => {
 	);
 };
 
+const SelectChevronIcon = ({ className, ...props }: LucideProps) => {
+	return (
+		<ChevronDownIcon
+			strokeWidth={1.6}
+			className={cn('text-foreground/50', className)}
+			{...props}
+		/>
+	);
+};
+
 const Input = ({
 	className,
-	showTrigger = true,
 	disabled = false,
+	buttons = [],
 	placeholder = 'Select an option...',
+	style: inputStyle,
 	...props
 }: SelectInputProps) => {
+	const triggerRef = useRef<HTMLButtonElement | null>(null);
+	const defaultTriggerButton: InputButton = {
+		side: 'right',
+		icon: SelectChevronIcon,
+		label: 'Toggle options',
+		isGhost: true,
+		onClick: () => {
+			triggerRef.current?.click();
+		},
+	};
+	const inputButtons = [...buttons, defaultTriggerButton];
+
+	const { paddingStyle } = getInputButtonsLayout({
+		buttons: inputButtons,
+	});
+
 	return (
 		<div
 			data-slot='select-input-wrapper'
@@ -39,29 +71,35 @@ const Input = ({
 				data-slot='select-input'
 				disabled={disabled}
 				className={cn(
-					'border-input data-placeholder:text-muted-foreground dark:bg-input/30 focus:border-primary aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 disabled:bg-input/50 dark:disabled:bg-input/80 rounded-lg border bg-transparent text-base md:text-sm transition-colors outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 w-full h-8 py-1.5 pr-8 pl-2.5',
+					fieldInputVariants({
+						height: 'fixed',
+						focusMode: 'focus',
+					}),
+					'data-placeholder:text-muted-foreground',
 					className,
 				)}
+				style={{ ...paddingStyle, ...inputStyle }}
 				placeholder={placeholder}
 				{...props}
 			/>
-			{showTrigger && <Trigger disabled={disabled} />}
-		</div>
-	);
-};
+			<ComboboxPrimitive.Trigger
+				ref={triggerRef}
+				tabIndex={-1}
+				className='sr-only pointer-events-none'
+			/>
 
-const Trigger = ({ className, ...props }: SelectTriggerProps) => {
-	return (
-		<ComboboxPrimitive.Trigger
-			data-slot='select-trigger'
-			className={cn(
-				"text-muted-foreground hover:text-foreground transition-colors absolute top-1/2 -translate-y-1/2 flex items-center justify-center [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 right-2 size-4",
-				className,
-			)}
-			{...props}
-		>
-			<ChevronDownIcon />
-		</ComboboxPrimitive.Trigger>
+			<BaseField.InputButtons
+				buttons={inputButtons}
+				side='left'
+				disabled={disabled}
+			/>
+
+			<BaseField.InputButtons
+				buttons={inputButtons}
+				side='right'
+				disabled={disabled}
+			/>
+		</div>
 	);
 };
 
@@ -179,7 +217,6 @@ const Empty = ({ className, ...props }: SelectEmptyProps) => {
 export const Select = {
 	Root,
 	Input,
-	Trigger,
 	Content,
 	List,
 	Item,

@@ -1,17 +1,14 @@
 import type { Combobox as ComboboxPrimitive } from '@base-ui/react';
 import type { ComponentProps } from 'react';
+import type { InputButton } from '../base-field/types';
 
 export type SelectRootProps = ComponentProps<typeof ComboboxPrimitive.Root>;
 
 export type SelectInputProps = ComponentProps<
 	typeof ComboboxPrimitive.Input
 > & {
-	showTrigger?: boolean;
+	buttons?: InputButton[];
 };
-
-export type SelectTriggerProps = ComponentProps<
-	typeof ComboboxPrimitive.Trigger
->;
 
 export type SelectContentProps = ComponentProps<
 	typeof ComboboxPrimitive.Popup

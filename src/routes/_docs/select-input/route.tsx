@@ -1,6 +1,7 @@
 import { Docs } from '@/components/docs';
 import { SelectInput } from '@/components/select-input';
 import { createFileRoute } from '@tanstack/react-router';
+import { SearchIcon, XIcon } from 'lucide-react';
 
 export const Route = createFileRoute('/_docs/select-input')({
 	component: SelectInputPage,
@@ -70,6 +71,32 @@ function SelectInputPage() {
 						label='Fruit with Icon'
 						items={fruits}
 						itemRender={(item) => `[fruit] ${item.label}`}
+					/>
+				</Docs.Preview>
+			</Docs.Section>
+
+			<Docs.Section title='With Input Buttons'>
+				<Docs.Preview>
+					<SelectInput
+						label='Searchable Fruit'
+						placeholder='Choose a fruit'
+						items={fruits}
+						buttons={[
+							{
+								side: 'left',
+								icon: SearchIcon,
+								label: 'Search fruits',
+								onClick: () => undefined,
+								isGhost: true,
+							},
+							{
+								side: 'right',
+								icon: XIcon,
+								label: 'Clear filter',
+								onClick: () => undefined,
+								isGhost: true,
+							},
+						]}
 					/>
 				</Docs.Preview>
 			</Docs.Section>
@@ -149,6 +176,12 @@ const fruits = [
 							type: '(item: TItem) => React.ReactNode',
 							default: '-',
 							description: 'Custom renderer for each option',
+						},
+						{
+							name: 'buttons',
+							type: 'InputButton[]',
+							default: '-',
+							description: 'Inline icon buttons rendered inside the input',
 						},
 						{
 							name: 'allowEmpty',
