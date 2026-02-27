@@ -1,23 +1,23 @@
-import { Checkbox } from '@/components/checkbox';
-import { MultiSelectInput } from '@/components/multi-select-input';
-import { SelectInput } from '@/components/select-input';
-import { Switch } from '@/components/switch';
-import { TextInput } from '@/components/text-input';
-import { createFormHook } from '@tanstack/react-form';
-import { fieldContext, formContext } from './contexts';
-import { FormInputWrapper } from './FormInputWrapper';
+import { Checkbox } from "@/components/checkbox";
+import { MultiSelectInput } from "@/components/multi-select-input";
+import { SelectInput } from "@/components/select-input";
+import { Switch } from "@/components/switch";
+import { TextInput } from "@/components/text-input";
+import { createFormHook } from "@tanstack/react-form";
+import { fieldContext, formContext } from "./contexts";
+import { FormInputWrapper } from "./FormInputWrapper";
 
-export { useFieldContext, useFormContext } from './contexts';
+export { useFieldContext, useFormContext } from "./contexts";
 
 export const { useAppForm, withFieldGroup, withForm } = createFormHook({
-	fieldContext,
-	formContext,
-	fieldComponents: {
-		TextInput: FormInputWrapper(TextInput),
-		SelectInput: FormInputWrapper(SelectInput),
-		MultiSelectInput: FormInputWrapper(MultiSelectInput),
-		Checkbox: FormInputWrapper(Checkbox),
-		Switch: FormInputWrapper(Switch),
-	},
-	formComponents: {},
+  fieldContext,
+  formContext,
+  fieldComponents: {
+    TextInput: FormInputWrapper(TextInput),
+    SelectInput: FormInputWrapper(SelectInput),
+    MultiSelectInput: FormInputWrapper(MultiSelectInput),
+    Checkbox: FormInputWrapper(Checkbox),
+    Switch: FormInputWrapper(Switch),
+  },
+  formComponents: {},
 });

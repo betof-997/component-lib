@@ -1,9 +1,8 @@
 export { Form } from './Form';
 export type {
+	AppFormApi,
 	FormGroupProps,
-	FormLegendProps,
-	FormLegendVariant,
+	FormRootProps,
 	FormSeparatorProps,
 	FormSetProps,
-	FormTitleProps,
 } from './types';

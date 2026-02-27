@@ -1,13 +1,13 @@
-import { TanStackDevtools } from '@tanstack/react-devtools';
-import type { QueryClient } from '@tanstack/react-query';
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import type { QueryClient } from "@tanstack/react-query";
 import {
 	HeadContent,
 	Scripts,
 	createRootRouteWithContext,
-} from '@tanstack/react-router';
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import { tanstackQueryDevtoolsConfig } from '../components/tanstack-query';
-import appCss from '../styles.css?url';
+} from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { tanstackQueryDevtoolsConfig } from "../components/tanstack-query";
+import appCss from "../styles.css?url";
 
 interface MyRouterContext {
 	queryClient: QueryClient;
@@ -17,30 +17,31 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	head: () => ({
 		meta: [
 			{
-				charSet: 'utf-8',
+				charSet: "utf-8",
 			},
 			{
-				name: 'viewport',
-				content: 'width=device-width, initial-scale=1',
+				name: "viewport",
+				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: '@betof-997/component-lib',
+				title: "@betof-997/project-boilerplate",
 			},
 		],
 		links: [
 			{
-				rel: 'stylesheet',
+				rel: "stylesheet",
 				href: appCss,
 			},
 		],
 	}),
 	notFoundComponent: () => <div>Not Found</div>,
+	errorComponent: () => <div>Error</div>,
 	shellComponent: RootDocument,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang='en'>
+		<html lang="en">
 			<head>
 				<HeadContent />
 			</head>
@@ -49,11 +50,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
 				<TanStackDevtools
 					config={{
-						position: 'bottom-right',
+						position: "bottom-right",
 					}}
 					plugins={[
 						{
-							name: 'Tanstack Router',
+							name: "Tanstack Router",
 							render: <TanStackRouterDevtoolsPanel />,
 						},
 						tanstackQueryDevtoolsConfig,
