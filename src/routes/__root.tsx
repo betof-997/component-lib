@@ -1,5 +1,6 @@
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import type { QueryClient } from '@tanstack/react-query';
+import { useQuery, } from '@tanstack/react-query';
 import {
 	HeadContent,
 	Scripts,
@@ -8,6 +9,9 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { tanstackQueryDevtoolsConfig } from '../components/tanstack-query';
 import appCss from '../styles.css?url';
+import { createServerFn } from '@tanstack/react-start';
+import { db } from '@/db/client';
+import { userTable } from '@/db/tables';
 
 export type AppRouterContext = {
 	queryClient: QueryClient;
@@ -39,7 +43,19 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
 	shellComponent: RootDocument,
 });
 
+const getUsersServerFn = createServerFn().handler(async () => {
+	return await db.select().from(userTable);
+});
+
 function RootDocument({ children }: { children: React.ReactNode }) {
+	const { data: users } = useQuery({
+		queryKey: ['users'],
+		queryFn: () => getUsersServerFn(),
+	});
+
+	// biome-ignore lint/suspicious/noConsole: <explanation>1
+	console.log('users', users);
+
 	return (
 		<html lang='en'>
 			<head>
