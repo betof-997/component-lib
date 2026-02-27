@@ -1,4 +1,5 @@
 import appCss from '../../styles.css?url';
+import { appConfig } from '@/utils/appConfig';
 
 export const getRootRouteHead = () => ({
 	meta: [
@@ -10,7 +11,11 @@ export const getRootRouteHead = () => ({
 			content: 'width=device-width, initial-scale=1',
 		},
 		{
-			title: '@betof-997/boilerplate',
+			title: appConfig.seo.title,
+		},
+		{
+			name: 'description',
+			content: appConfig.seo.description,
 		},
 	],
 	links: [
