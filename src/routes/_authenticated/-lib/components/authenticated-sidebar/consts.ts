@@ -14,12 +14,12 @@ export const authenticatedSidebarNavItems: AuthenticatedSidebarNavItem[] = [
     subItems: [
       {
         label: "Products",
-        to: "/dashboard",
+        to: "/products",
         icon: PackageIcon,
       },
       {
         label: "Clients",
-        to: "/dashboard",
+        to: "/clients",
         icon: UsersIcon,
       },
     ],

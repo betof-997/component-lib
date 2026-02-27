@@ -3,12 +3,14 @@ import { ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
 import { authClient } from '@/lib/authClient';
-import { getSession } from '@/lib/authServer';
+import { authSessionQueryOptions } from '@/lib/authServer';
 import { appConfig } from '@/utils/appConfig';
 
 export const Route = createFileRoute('/')({
-	beforeLoad: async () => {
-		const session = await getSession();
+	beforeLoad: async ({ context }) => {
+		const session = await context.queryClient.ensureQueryData(
+			authSessionQueryOptions,
+		);
 
 		if (session) {
 			throw redirect({ to: '/dashboard' });
@@ -42,8 +44,8 @@ function RouteComponent() {
 						{appConfig.appTagline}
 					</h1>
 					<p className='mt-4 max-w-md text-sm text-primary-foreground/80'>
-						Authentication, routing, and core structure are already set up.
-						Sign in and continue building your next product.
+						Authentication, routing, and core structure are already set up. Sign
+						in and continue building your next product.
 					</p>
 
 					<div className='mt-12 flex items-center gap-3 rounded-xl border border-primary-foreground/20 bg-primary-foreground/10 p-4'>
@@ -60,7 +62,10 @@ function RouteComponent() {
 				</div>
 
 				<div className='mx-auto w-full max-w-md rounded-3xl border border-border/70 bg-card p-8 shadow-lg sm:p-10'>
-					<Badge variant='default' className='mb-5'>
+					<Badge
+						variant='default'
+						className='mb-5'
+					>
 						Welcome
 					</Badge>
 					<h2 className='text-2xl font-semibold tracking-tight text-foreground'>
