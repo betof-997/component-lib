@@ -119,7 +119,7 @@ const Content = ({ className, ...props }: SidebarContentProps) => {
 			data-slot='sidebar-content'
 			data-sidebar='content'
 			className={cn(
-				'no-scrollbar gap-0 flex min-h-0 flex-1 flex-col overflow-auto group-data-[collapsible=icon]:overflow-hidden',
+				'no-scrollbar gap-0 py-1 flex min-h-0 flex-1 flex-col overflow-auto group-data-[collapsible=icon]:overflow-hidden',
 				className,
 			)}
 			{...props}
@@ -132,7 +132,7 @@ const Group = ({ className, ...props }: SidebarGroupProps) => {
 		<div
 			data-slot='sidebar-group'
 			data-sidebar='group'
-			className={cn('p-2 relative flex w-full min-w-0 flex-col', className)}
+			className={cn('px-2 py-1 relative flex w-full min-w-0 flex-col', className)}
 			{...props}
 		/>
 	);
@@ -174,7 +174,7 @@ const Menu = ({ className, ...props }: SidebarMenuProps) => {
 		<ul
 			data-slot='sidebar-menu'
 			data-sidebar='menu'
-			className={cn('gap-0 flex w-full min-w-0 flex-col', className)}
+			className={cn('gap-0.5 flex w-full min-w-0 flex-col', className)}
 			{...props}
 		/>
 	);
