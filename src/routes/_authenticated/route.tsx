@@ -21,8 +21,17 @@ function AuthenticatedLayout() {
     <Sidebar.Root>
       <AuthenticatedSidebar />
 
-      <main data-slot="authenticated-layout-content" className="min-w-0 flex-1">
-        <Outlet />
+      <main
+        data-slot="authenticated-layout-content"
+        className="flex min-w-0 flex-1 flex-col"
+      >
+        <div className="p-2">
+          <Sidebar.Trigger />
+        </div>
+
+        <div className="min-h-0 flex-1">
+          <Outlet />
+        </div>
       </main>
     </Sidebar.Root>
   );

@@ -10,12 +10,11 @@ export const AuthenticatedSidebar = () => {
     <Sidebar.Panel data-slot="authenticated-sidebar" collapsible="icon">
       <div
         data-slot="authenticated-sidebar-header"
-        className="flex items-center justify-between border-b border-sidebar-border p-2"
+        className="flex items-center border-b border-sidebar-border p-2"
       >
         <p className="truncate px-2 text-sm font-semibold text-sidebar-foreground">
           {appConfig.appName}
         </p>
-        <Sidebar.Trigger />
       </div>
 
       <Sidebar.Content data-slot="authenticated-sidebar-content">
