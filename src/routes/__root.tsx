@@ -6,34 +6,15 @@ import {
 	createRootRouteWithContext,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
+import { getRootRouteHead } from './-lib/getRootRouteHead';
 import { tanstackQueryDevtoolsConfig } from '../components/tanstack-query';
-import appCss from '../styles.css?url';
 
 export type AppRouterContext = {
 	queryClient: QueryClient;
 };
 
 export const Route = createRootRouteWithContext<AppRouterContext>()({
-	head: () => ({
-		meta: [
-			{
-				charSet: 'utf-8',
-			},
-			{
-				name: 'viewport',
-				content: 'width=device-width, initial-scale=1',
-			},
-			{
-				title: '@betof-997/boilerplate',
-			},
-		],
-		links: [
-			{
-				rel: 'stylesheet',
-				href: appCss,
-			},
-		],
-	}),
+	head: () => getRootRouteHead(),
 	notFoundComponent: () => <div>Not Found</div>,
 	errorComponent: () => <div>Error</div>,
 	shellComponent: RootDocument,
