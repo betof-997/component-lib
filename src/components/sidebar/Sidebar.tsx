@@ -24,12 +24,7 @@ import type {
 } from './types';
 import { useSidebar } from './useSidebar';
 
-const Root = ({
-	className,
-	style,
-	children,
-	...props
-}: SidebarRootProps) => {
+const Root = ({ className, style, children, ...props }: SidebarRootProps) => {
 	const isMobile = useIsMobile();
 	const setIsMobile = useSidebar((s) => s.setIsMobile);
 	const toggleSidebar = useSidebar((s) => s.toggleSidebar);

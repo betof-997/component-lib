@@ -136,7 +136,10 @@ const InputButtons = ({
 			data-slot='field-input-buttons'
 			className={cn(
 				layout === 'overlay'
-					? cn(inputButtonsSideClassName, side === 'left' ? 'left-0' : 'right-0')
+					? cn(
+							inputButtonsSideClassName,
+							side === 'left' ? 'left-0' : 'right-0',
+						)
 					: 'flex items-center gap-1',
 				className,
 			)}

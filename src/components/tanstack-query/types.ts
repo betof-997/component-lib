@@ -1,13 +1,13 @@
-import type { PropsWithChildren } from 'react'
-import type { QueryClient } from '@tanstack/react-query'
-import type { TanStackDevtoolsReactPlugin } from '@tanstack/react-devtools'
+import type { PropsWithChildren } from 'react';
+import type { QueryClient } from '@tanstack/react-query';
+import type { TanStackDevtoolsReactPlugin } from '@tanstack/react-devtools';
 
 export type TanstackQueryProviderProps = PropsWithChildren<{
-	queryClient: QueryClient
-}>
+	queryClient: QueryClient;
+}>;
 
 export type TanstackQueryContext = {
-	queryClient: QueryClient
-}
+	queryClient: QueryClient;
+};
 
-export type TanstackQueryDevtoolsConfig = TanStackDevtoolsReactPlugin
+export type TanstackQueryDevtoolsConfig = TanStackDevtoolsReactPlugin;
