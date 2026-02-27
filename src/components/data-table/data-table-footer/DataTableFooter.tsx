@@ -2,13 +2,18 @@ import { Button } from '@/components/button';
 import { DropdownMenu } from '@/components/dropdown-menu';
 import { cn } from '@/lib/utils';
 import type { DataTableFooterProps } from './types';
+import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from '../consts';
 
 export const DataTableFooter = <TData,>({
 	table,
-	totalItems,
-	pageSizeOptions,
+	data,
+	pagination,
 }: DataTableFooterProps<TData>) => {
 	'use no memo'; // React Compiler + TanStack Table compatibility workaround.
+
+	const pageSizeOptions =
+		pagination?.pageSizeOptions ?? DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS;
+	const totalItems = data.length;
 
 	const pageCount = table.getPageCount();
 	const currentPageSize = table.getState().pagination.pageSize;

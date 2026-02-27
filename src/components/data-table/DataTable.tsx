@@ -10,6 +10,7 @@ import { DataTableBody } from './data-table-body';
 import { DataTableFooter } from './data-table-footer';
 import { DataTableHeader } from './data-table-header';
 import type { DataTableProps } from './types';
+import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from './consts';
 
 export const DataTable = <TData, TValue>({
 	columns,
@@ -19,13 +20,10 @@ export const DataTable = <TData, TValue>({
 	pagination,
 }: DataTableProps<TData, TValue>) => {
 	'use no memo';
-	const resolvedPageSizeOptions = pagination?.pageSizeOptions ?? [
-		10, 25, 50, 100,
-	];
 
 	const [tablePagination, setTablePagination] = useState({
-		pageIndex: pagination?.initialPageIndex ?? 0,
-		pageSize: pagination?.pageSize ?? 10,
+		pageIndex: 0,
+		pageSize: DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS[0],
 	});
 
 	const table = useReactTable({
@@ -56,8 +54,8 @@ export const DataTable = <TData, TValue>({
 
 			<DataTableFooter
 				table={table}
-				totalItems={data.length}
-				pageSizeOptions={resolvedPageSizeOptions}
+				data={data}
+				pagination={pagination}
 			/>
 		</div>
 	);
