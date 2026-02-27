@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Sidebar } from "@/components/sidebar";
 import { appConfig } from "@/utils/appConfig";
+import { SidebarUserMenu } from "../sidebar-user-menu";
 import { authenticatedSidebarNavItems } from "./consts";
 import type { SidebarNavLinkItem } from "./types";
 
@@ -54,6 +55,17 @@ export const AuthenticatedSidebar = () => {
           );
         })}
       </Sidebar.Content>
+
+      <div
+        data-slot="authenticated-sidebar-footer"
+        className="border-t border-sidebar-border p-2"
+      >
+        <Sidebar.Menu>
+          <Sidebar.MenuItem>
+            <SidebarUserMenu />
+          </Sidebar.MenuItem>
+        </Sidebar.Menu>
+      </div>
     </Sidebar.Panel>
   );
 };
