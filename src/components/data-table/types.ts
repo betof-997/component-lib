@@ -1,12 +1,12 @@
-import type {
-	ColumnDef,
-	OnChangeFn,
-	PaginationState,
-} from '@tanstack/react-table';
+import type { OnChangeFn, PaginationState } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import type { ButtonProps } from '@/components/button';
 import type { DropdownMenuItemProps } from '@/components/dropdown-menu';
+import type {
+	DataTableAccessorKeyColumn,
+	DataTableIdColumn,
+} from './data-table-column-render/types';
 
 type DataTablePaginationBaseOptions = {
 	pageSizeOptions?: number[];
@@ -128,8 +128,12 @@ export type DataTableToolbarAction<TData> =
 	| DataTableToolbarActionDropdown<TData>
 	| DataTableToolbarActionOther;
 
-type DataTableSharedProps<TData, TValue> = {
-	columns: ColumnDef<TData, TValue>[];
+export type DataTableColumn<TData> =
+	| DataTableIdColumn<TData>
+	| DataTableAccessorKeyColumn<TData>;
+
+type DataTableSharedProps<TData> = {
+	columns: DataTableColumn<TData>[];
 	data: TData[];
 	isLoading?: boolean;
 	emptyMessage?: string;
@@ -138,26 +142,20 @@ type DataTableSharedProps<TData, TValue> = {
 	toolbarActions?: DataTableToolbarAction<TData>[];
 };
 
-export type DataTableClientProps<TData, TValue> = DataTableSharedProps<
-	TData,
-	TValue
-> & {
+export type DataTableClientProps<TData> = DataTableSharedProps<TData> & {
 	pagination?: DataTableClientPagination;
 	sort?: DataTableClientSort;
 	filter?: never;
 	defaultSort?: DataTableSort<TData>;
 };
 
-export type DataTableServerProps<TData, TValue> = DataTableSharedProps<
-	TData,
-	TValue
-> & {
+export type DataTableServerProps<TData> = DataTableSharedProps<TData> & {
 	pagination: DataTableServerPagination;
 	sort?: DataTableServerSort<TData>;
 	filter?: DataTableServerFilter<TData>;
 	defaultSort?: never;
 };
 
-export type DataTableProps<TData, TValue> =
-	| DataTableClientProps<TData, TValue>
-	| DataTableServerProps<TData, TValue>;
+export type DataTableProps<TData> =
+	| DataTableClientProps<TData>
+	| DataTableServerProps<TData>;

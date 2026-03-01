@@ -1,9 +1,17 @@
 import type {
+	ColumnDef,
 	ColumnFiltersState,
 	SortingState,
 	Updater,
 } from '@tanstack/react-table';
-import type { DataTableFilterItem } from '../types';
+import type {
+	DataTableColumn,
+	DataTableFilterItem,
+	DataTableRowAction,
+} from '../types';
+import type { DataTableAccessorKeyColumn } from '../data-table-column-render/types';
+import { createRowActionsColumn } from '../utils';
+import { DataTableColumnRender } from '../data-table-column-render';
 
 export const resolveDataTableSingleColumnSorting = <TData,>(
 	updater: Updater<SortingState>,
@@ -66,3 +74,52 @@ export const toServerDataTableFilters = <TData,>(
 			},
 		];
 	});
+
+const isAccessorKeyColumn = <TData,>(
+	column: DataTableColumn<TData>,
+): column is DataTableAccessorKeyColumn<TData> => {
+	return 'accessorKey' in column && column.accessorKey !== undefined;
+};
+
+type ResolveDataTableColumnParams<TData> = {
+	baseColumns: DataTableColumn<TData>[];
+	rowActions: DataTableRowAction<TData>[];
+};
+export const resolveDataTableColumn = <TData,>({
+	baseColumns,
+	rowActions,
+}: ResolveDataTableColumnParams<TData>) => {
+	const columns: ColumnDef<TData>[] = [];
+
+	for (const column of baseColumns) {
+		if (column.id) {
+			columns.push({
+				id: column.id,
+				cell: ({ row }) => column.cell(row.original),
+			});
+			continue;
+		}
+
+		if (!isAccessorKeyColumn(column)) {
+			continue;
+		}
+
+		columns.push({
+			accessorKey: column.accessorKey,
+			enableSorting: column.canSort,
+			enableHiding: column.canHide,
+			cell: ({ row }) => (
+				<DataTableColumnRender
+					data={row.original}
+					column={column}
+				/>
+			),
+		});
+	}
+
+	if (rowActions.length > 0) {
+		columns.push(createRowActionsColumn(rowActions));
+	}
+
+	return columns;
+};

@@ -4,12 +4,15 @@ import type {
 	DataTableToolbarAction,
 } from '@/components/data-table';
 import { DataTable } from '@/components/data-table';
-import type { DataTableFilterItem } from '@/components/data-table/types';
+import type {
+	DataTableColumn,
+	DataTableFilterItem,
+} from '@/components/data-table/types';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/react-start';
 import { PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
+import { createServerFn } from '@tanstack/react-start';
 
 export const Route = createFileRoute('/_authenticated/products/')({
 	component: ProductsPage,
@@ -22,18 +25,19 @@ const data = Array.from({ length: 1000 }, (_, index) => ({
 	price: 100,
 }));
 
-const columns = [
+const columns: DataTableColumn<Product>[] = [
 	{
-		header: 'Name',
 		accessorKey: 'name',
 	},
 	{
-		header: 'Description',
 		accessorKey: 'description',
 	},
 	{
-		header: 'Price',
 		accessorKey: 'price',
+		format: {
+			kind: 'number',
+			style: 'currency',
+		},
 	},
 ];
 

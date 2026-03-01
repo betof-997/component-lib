@@ -12,17 +12,17 @@ import type {
 } from '@tanstack/react-table';
 import { useState } from 'react';
 import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from '../consts';
-import { createRowActionsColumn } from '../utils';
 import { DATA_TABLE_INITIAL_PAGE_INDEX } from './consts';
 import type { UseDataTableParams } from './types';
 import {
 	hasDataTableColumnFiltersChanged,
+	resolveDataTableColumn,
 	resolveDataTableColumnFilters,
 	resolveDataTableSingleColumnSorting,
 	toServerDataTableFilters,
 } from './utils';
 
-export const useDataTable = <TData, TValue>({
+export const useDataTable = <TData>({
 	columns: baseColumns,
 	data,
 	isLoading = false,
@@ -32,7 +32,7 @@ export const useDataTable = <TData, TValue>({
 	filter,
 	rowActions,
 	toolbarActions,
-}: UseDataTableParams<TData, TValue>) => {
+}: UseDataTableParams<TData>) => {
 	'use no memo'; // React Compiler + TanStack Table compatibility workaround.
 
 	const [tablePagination, setTablePagination] = useState({
@@ -150,10 +150,10 @@ export const useDataTable = <TData, TValue>({
 		setTableColumnFilters(nextColumnFilters);
 	};
 
-	const hasRowActions = (rowActions?.length ?? 0) > 0;
-	const columns = hasRowActions
-		? [...baseColumns, createRowActionsColumn(rowActions ?? [])]
-		: baseColumns;
+	const columns = resolveDataTableColumn({
+		baseColumns,
+		rowActions: rowActions ?? [],
+	});
 
 	const table = useReactTable({
 		data,

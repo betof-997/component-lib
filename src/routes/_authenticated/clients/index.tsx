@@ -1,13 +1,13 @@
 import { DataTable } from '@/components/data-table';
+import type { DataTableColumn } from '@/components/data-table/types';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated/clients/')({
 	component: ClientsPage,
 });
 
-const columns = [
+const columns: DataTableColumn<Client>[] = [
 	{
-		header: 'Name',
 		accessorKey: 'name',
 	},
 ];
@@ -16,6 +16,7 @@ const data = Array.from({ length: 1000 }, (_, index) => ({
 	id: index,
 	name: `Client ${index}`,
 }));
+type Client = (typeof data)[number];
 
 function ClientsPage() {
 	return (

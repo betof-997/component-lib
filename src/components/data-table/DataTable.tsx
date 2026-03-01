@@ -8,10 +8,9 @@ import { DataTableToolbar } from './data-table-toolbar';
 import type { DataTableProps } from './types';
 import { useDataTable } from './use-data-table';
 
-export const DataTable = <TData, TValue>(
-	props: DataTableProps<TData, TValue>,
-) => {
+export const DataTable = <TData,>(props: DataTableProps<TData>) => {
 	'use no memo';
+
 	const {
 		emptyMessage = 'No results.',
 		className,

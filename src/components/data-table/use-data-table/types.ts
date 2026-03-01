@@ -1,3 +1,3 @@
 import type { DataTableProps } from '../types';
 
-export type UseDataTableParams<TData, TValue> = DataTableProps<TData, TValue>;
+export type UseDataTableParams<TData> = DataTableProps<TData>;
