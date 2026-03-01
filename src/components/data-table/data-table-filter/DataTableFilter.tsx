@@ -38,7 +38,6 @@ export const DataTableFilter = <TData,>({
 			</Popover.Trigger>
 
 			<Popover.Content
-				align='end'
 				className='w-56'
 			>
 				<Popover.Title>Filter</Popover.Title>
