@@ -1,0 +1,1 @@
+export const DATA_TABLE_INITIAL_PAGE_INDEX = 0;
