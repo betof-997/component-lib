@@ -12,19 +12,30 @@ type DataTablePaginationBaseOptions = {
 	pageSizeOptions?: number[];
 };
 
-export type DataTableClientPaginationOptions = {
+export type DataTableSort<TData> = {
+	id: Extract<keyof TData, string>;
+	desc: boolean;
+};
+
+export type DataTableClientSort = boolean;
+
+export type DataTableServerSort<TData> = {
+	state: DataTableSort<TData>;
+	setState: OnChangeFn<DataTableSort<TData>>;
+};
+
+export type DataTableClientPagination = DataTablePaginationBaseOptions & {
 	isServerSide?: false;
 };
 
-export type DataTableServerPaginationOptions = {
+export type DataTableServerPagination = DataTablePaginationBaseOptions & {
 	isServerSide: true;
 	state: PaginationState;
-	onPaginationChange: OnChangeFn<PaginationState>;
+	setState: OnChangeFn<PaginationState>;
 	totalItems: number;
 };
 
-export type DataTablePaginationOptions = DataTablePaginationBaseOptions &
-	(DataTableClientPaginationOptions | DataTableServerPaginationOptions);
+export type DataTablePagination = DataTableClientPagination | DataTableServerPagination;
 
 export type DataTableColumnMeta = {
 	headerClassName?: string;
@@ -105,13 +116,34 @@ export type DataTableToolbarAction<TData> =
 	| DataTableToolbarActionDropdown<TData>
 	| DataTableToolbarActionOther;
 
-export type DataTableProps<TData, TValue> = {
+type DataTableSharedProps<TData, TValue> = {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	isLoading?: boolean;
 	emptyMessage?: string;
 	className?: string;
-	pagination?: DataTablePaginationOptions;
 	rowActions?: DataTableRowAction<TData>[];
 	toolbarActions?: DataTableToolbarAction<TData>[];
 };
+
+export type DataTableClientProps<TData, TValue> = DataTableSharedProps<
+	TData,
+	TValue
+> & {
+	pagination?: DataTableClientPagination;
+	sort?: DataTableClientSort;
+	defaultSort?: DataTableSort<TData>;
+};
+
+export type DataTableServerProps<TData, TValue> = DataTableSharedProps<
+	TData,
+	TValue
+> & {
+	pagination: DataTableServerPagination;
+	sort?: DataTableServerSort<TData>;
+	defaultSort?: never;
+};
+
+export type DataTableProps<TData, TValue> =
+	| DataTableClientProps<TData, TValue>
+	| DataTableServerProps<TData, TValue>;

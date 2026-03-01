@@ -1,9 +1,15 @@
 import {
 	getCoreRowModel,
 	getPaginationRowModel,
+	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-import type { ColumnDef } from '@tanstack/react-table';
+import type {
+	ColumnDef,
+	OnChangeFn,
+	SortingState,
+	Updater,
+} from '@tanstack/react-table';
 import { LoaderCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -16,13 +22,34 @@ import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from './consts';
 import type { DataTableProps } from './types';
 import { createRowActionsColumn } from './utils.tsx';
 
+const resolveSingleColumnSorting = <TData,>(
+	updater: Updater<SortingState>,
+	previousSorting: SortingState,
+) => {
+	const nextSorting =
+		typeof updater === 'function' ? updater(previousSorting) : updater;
+
+	if (nextSorting.length === 0) {
+		return [];
+	}
+
+	return [
+		{
+			id: nextSorting[0].id as Extract<keyof TData, string>,
+			desc: nextSorting[0].desc,
+		},
+	];
+};
+
 export const DataTable = <TData, TValue>({
 	columns,
 	data,
 	isLoading = false,
 	emptyMessage = 'No results.',
 	className,
+	defaultSort,
 	pagination,
+	sort,
 	rowActions,
 	toolbarActions,
 }: DataTableProps<TData, TValue>) => {
@@ -32,13 +59,66 @@ export const DataTable = <TData, TValue>({
 		pageIndex: 0,
 		pageSize: DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS[0],
 	});
-	const isServerPaginationEnabled = pagination?.isServerSide === true;
+	const [tableSorting, setTableSorting] = useState<SortingState>(() =>
+		defaultSort ? [defaultSort] : [],
+	);
+	const serverPagination =
+		pagination?.isServerSide === true ? pagination : null;
+	const isServerPaginationEnabled = serverPagination !== null;
+	const serverSort =
+		isServerPaginationEnabled && typeof sort === 'object' && sort !== null
+			? sort
+			: null;
+	const isClientSortEnabled = !isServerPaginationEnabled && sort !== false;
+	const isServerSortEnabled = isServerPaginationEnabled && serverSort !== null;
+	const isSortingEnabled = isClientSortEnabled || isServerSortEnabled;
 	const resolvedPagination = isServerPaginationEnabled
-		? pagination.state
+		? serverPagination.state
 		: tablePagination;
 	const resolvedOnPaginationChange = isServerPaginationEnabled
-		? pagination.onPaginationChange
+		? serverPagination.setState
 		: setTablePagination;
+	const resolvedSorting = isServerSortEnabled
+		? [serverSort.state]
+		: isClientSortEnabled
+			? tableSorting
+			: [];
+	const resolvedOnSortingChange: OnChangeFn<SortingState> = (updater) => {
+		if (!isSortingEnabled) {
+			return;
+		}
+
+		const nextSorting = resolveSingleColumnSorting<TData>(
+			updater,
+			resolvedSorting,
+		);
+		const previousSort = resolvedSorting[0];
+		const nextSort = nextSorting[0];
+		const hasSortChanged =
+			previousSort?.id !== nextSort?.id ||
+			previousSort?.desc !== nextSort?.desc;
+
+		if (hasSortChanged) {
+			resolvedOnPaginationChange((previousPagination) => ({
+				...previousPagination,
+				pageIndex: 0,
+			}));
+		}
+
+		if (isServerSortEnabled) {
+			if (!nextSort) {
+				return;
+			}
+
+			serverSort.setState({
+				id: nextSort.id,
+				desc: nextSort.desc,
+			});
+			return;
+		}
+
+		setTableSorting(nextSorting);
+	};
 	const hasToolbarActions = (toolbarActions?.length ?? 0) > 0;
 	const hasRowActions = (rowActions?.length ?? 0) > 0;
 	const resolvedColumns: ColumnDef<TData, unknown>[] = hasRowActions
@@ -55,11 +135,22 @@ export const DataTable = <TData, TValue>({
 		getPaginationRowModel: isServerPaginationEnabled
 			? undefined
 			: getPaginationRowModel(),
+		getSortedRowModel: isClientSortEnabled
+			? getSortedRowModel()
+			: undefined,
 		manualPagination: isServerPaginationEnabled,
-		rowCount: isServerPaginationEnabled ? pagination.totalItems : undefined,
+		manualSorting: isServerSortEnabled,
+		enableSorting: isSortingEnabled,
+		enableMultiSort: false,
+		enableSortingRemoval: !isServerPaginationEnabled,
+		rowCount: isServerPaginationEnabled
+			? serverPagination.totalItems
+			: undefined,
 		onPaginationChange: resolvedOnPaginationChange,
+		onSortingChange: isSortingEnabled ? resolvedOnSortingChange : undefined,
 		state: {
 			pagination: resolvedPagination,
+			sorting: resolvedSorting,
 		},
 	});
 

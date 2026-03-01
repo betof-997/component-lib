@@ -1,5 +1,6 @@
 import { DataTable } from '@/components/data-table';
 import type { DataTableRowAction } from '@/components/data-table';
+import type { DataTableSort } from '@/components/data-table';
 import type { DataTableToolbarAction } from '@/components/data-table';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
@@ -14,12 +15,22 @@ export const Route = createFileRoute('/_authenticated/products/')({
 const data = Array.from({ length: 1000 }, (_, index) => ({
 	id: index,
 	name: `Product ${index}`,
+	description: `Description for product ${index}`,
+	price: 100,
 }));
 
 const columns = [
 	{
 		header: 'Name',
 		accessorKey: 'name',
+	},
+	{
+		header: 'Description',
+		accessorKey: 'description',
+	},
+	{
+		header: 'Price',
+		accessorKey: 'price',
 	},
 ];
 
@@ -52,12 +63,35 @@ const toolbarActions: DataTableToolbarAction<Product>[] = [
 ];
 
 const getPaginatedProducts = createServerFn()
-	.inputValidator((d: { pageIndex: number; pageSize: number }) => d)
-	.handler(async ({ data: { pageIndex, pageSize } }) => {
+	.inputValidator(
+		(d: {
+			pageIndex: number;
+			pageSize: number;
+			sort: DataTableSort<Product>;
+		}) => d,
+	)
+	.handler(async ({ data: { pageIndex, pageSize, sort } }) => {
 		const start = pageIndex * pageSize;
 		const end = start + pageSize;
 
-		const paginatedData = data.slice(start, end);
+		const paginatedData = [...data]
+			.sort((a, b) => {
+				if (sort.id === 'name') {
+					return sort.desc
+						? b.name.localeCompare(a.name)
+						: a.name.localeCompare(b.name);
+				}
+				if (sort.id === 'description') {
+					return sort.desc
+						? b.description.localeCompare(a.description)
+						: a.description.localeCompare(b.description);
+				}
+				if (sort.id === 'price') {
+					return sort.desc ? b.price - a.price : a.price - b.price;
+				}
+				return 0;
+			})
+			.slice(start, end);
 
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -69,13 +103,25 @@ function ProductsPage() {
 		pageIndex: 0,
 		pageSize: 10,
 	});
+	const [sort, setSort] = useState<DataTableSort<Product>>({
+		id: 'name',
+		desc: false,
+	});
+
 	const { data: paginatedProducts, isFetching } = useQuery({
-		queryKey: ['products', pagination.pageIndex, pagination.pageSize],
+		queryKey: [
+			'products',
+			pagination.pageIndex,
+			pagination.pageSize,
+			sort.id,
+			sort.desc,
+		],
 		queryFn: () =>
 			getPaginatedProducts({
 				data: {
 					pageIndex: pagination.pageIndex,
 					pageSize: pagination.pageSize,
+					sort,
 				},
 			}),
 		placeholderData: keepPreviousData,
@@ -94,8 +140,12 @@ function ProductsPage() {
 				pagination={{
 					isServerSide: true,
 					state: pagination,
-					onPaginationChange: setPagination,
+					setState: setPagination,
 					totalItems: paginatedProducts?.totalItems ?? 0,
+				}}
+				sort={{
+					state: sort,
+					setState: setSort,
 				}}
 			/>
 		</main>
