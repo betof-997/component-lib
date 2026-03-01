@@ -11,6 +11,7 @@ import { Table } from '@/components/table';
 import { DataTableBody } from './data-table-body';
 import { DataTableFooter } from './data-table-footer';
 import { DataTableHeader } from './data-table-header';
+import { DataTableToolbar } from './data-table-toolbar';
 import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from './consts';
 import type { DataTableProps } from './types';
 import { createRowActionsColumn } from './utils.tsx';
@@ -23,6 +24,7 @@ export const DataTable = <TData, TValue>({
 	className,
 	pagination,
 	rowActions,
+	toolbarActions,
 }: DataTableProps<TData, TValue>) => {
 	'use no memo';
 
@@ -37,6 +39,7 @@ export const DataTable = <TData, TValue>({
 	const resolvedOnPaginationChange = isServerPaginationEnabled
 		? pagination.onPaginationChange
 		: setTablePagination;
+	const hasToolbarActions = (toolbarActions?.length ?? 0) > 0;
 	const hasRowActions = (rowActions?.length ?? 0) > 0;
 	const resolvedColumns: ColumnDef<TData, unknown>[] = hasRowActions
 		? [
@@ -66,8 +69,15 @@ export const DataTable = <TData, TValue>({
 	return (
 		<div
 			data-slot='data-table'
-			className={cn('overflow-hidden rounded-md border relative', className)}
+			className={cn('relative overflow-hidden', className)}
 		>
+			{hasToolbarActions && (
+				<DataTableToolbar
+					table={table}
+					actions={toolbarActions ?? []}
+				/>
+			)}
+
 			<Table.Root
 				className={cn(
 					shouldShowLoading &&

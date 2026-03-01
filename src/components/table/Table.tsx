@@ -14,7 +14,7 @@ const Root = ({ className, ...props }: TableRootProps) => {
 	return (
 		<div
 			data-slot='table-container'
-			className='relative w-full overflow-x-auto'
+			className='relative w-full overflow-x-auto rounded-lg border border-border'
 		>
 			<table
 				data-slot='table'

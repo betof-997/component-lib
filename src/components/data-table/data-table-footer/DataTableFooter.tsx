@@ -46,7 +46,7 @@ export const DataTableFooter = <TData,>({
 		<div
 			data-slot='data-table-footer'
 			className={cn(
-				'border-border flex items-center gap-2 border-t p-2',
+				'flex items-center gap-2 p-2',
 				shouldShowPagination && shouldShowPageSizeSelector
 					? 'justify-between'
 					: 'justify-center',

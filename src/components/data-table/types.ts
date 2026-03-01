@@ -66,6 +66,45 @@ export type DataTableRowAction<TData> =
 	| DataTableRowActionDropdown<TData>
 	| DataTableRowActionOther;
 
+export type DataTableToolbarActionOnClickParams<TData> = {
+	data: TData[];
+};
+
+export type DataTableToolbarActionButton<TData> = {
+	type: 'button';
+	label: ReactNode;
+	icon?: LucideIcon;
+	onClick: (params: DataTableToolbarActionOnClickParams<TData>) => void;
+	className?: string;
+} & Pick<ButtonProps, 'variant' | 'isOutlined' | 'isGhost' | 'disabled'>;
+
+export type DataTableToolbarActionDropdownItem<TData> = {
+	id?: string;
+	label: ReactNode;
+	icon?: LucideIcon;
+	onClick: (params: DataTableToolbarActionOnClickParams<TData>) => void;
+	disabled?: boolean;
+} & Pick<DropdownMenuItemProps, 'className' | 'variant'>;
+
+export type DataTableToolbarActionDropdown<TData> = {
+	type: 'dropdown';
+	label: ReactNode;
+	icon?: LucideIcon;
+	items: DataTableToolbarActionDropdownItem<TData>[];
+	className?: string;
+} & Pick<ButtonProps, 'variant' | 'isOutlined' | 'isGhost' | 'disabled'>;
+
+export type DataTableToolbarActionOther = {
+	type: 'other';
+	label: ReactNode;
+	className?: string;
+};
+
+export type DataTableToolbarAction<TData> =
+	| DataTableToolbarActionButton<TData>
+	| DataTableToolbarActionDropdown<TData>
+	| DataTableToolbarActionOther;
+
 export type DataTableProps<TData, TValue> = {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
@@ -74,4 +113,5 @@ export type DataTableProps<TData, TValue> = {
 	className?: string;
 	pagination?: DataTablePaginationOptions;
 	rowActions?: DataTableRowAction<TData>[];
+	toolbarActions?: DataTableToolbarAction<TData>[];
 };
