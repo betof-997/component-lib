@@ -6,14 +6,13 @@ import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from '../consts';
 
 export const DataTableFooter = <TData,>({
 	table,
-	data,
 	pagination,
 }: DataTableFooterProps<TData>) => {
 	'use no memo'; // React Compiler + TanStack Table compatibility workaround.
 
 	const pageSizeOptions =
 		pagination?.pageSizeOptions ?? DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS;
-	const totalItems = data.length;
+	const totalItems = table.getRowCount();
 
 	const pageCount = table.getPageCount();
 	const currentPageSize = table.getState().pagination.pageSize;
