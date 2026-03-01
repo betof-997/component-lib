@@ -1,2 +1,10 @@
 export { DataTable } from './DataTable';
-export type { DataTableProps } from './types';
+export type {
+	DataTableColumnMeta,
+	DataTableProps,
+	DataTableRowAction,
+	DataTableRowActionButton,
+	DataTableRowActionDropdown,
+	DataTableRowActionDropdownItem,
+	DataTableRowActionOther,
+} from './types';

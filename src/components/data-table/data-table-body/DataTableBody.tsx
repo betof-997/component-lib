@@ -1,6 +1,7 @@
 import { flexRender } from '@tanstack/react-table';
 import { Table } from '@/components/table';
 import type { DataTableBodyProps } from './types';
+import type { DataTableColumnMeta } from '../types';
 
 export const DataTableBody = <TData,>({
 	table,
@@ -20,11 +21,20 @@ export const DataTableBody = <TData,>({
 						key={row.id}
 						data-state={row.getIsSelected() && 'selected'}
 					>
-						{row.getVisibleCells().map((cell) => (
-							<Table.Cell key={cell.id}>
+						{row.getVisibleCells().map((cell) => {
+							const meta = cell.column.columnDef.meta as
+								| DataTableColumnMeta
+								| undefined;
+
+							return (
+								<Table.Cell
+									key={cell.id}
+									className={meta?.cellClassName}
+								>
 								{flexRender(cell.column.columnDef.cell, cell.getContext())}
-							</Table.Cell>
-						))}
+								</Table.Cell>
+							);
+						})}
 					</Table.Row>
 				))
 			) : (

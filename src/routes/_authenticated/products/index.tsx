@@ -1,7 +1,9 @@
 import { DataTable } from '@/components/data-table';
+import type { DataTableRowAction } from '@/components/data-table';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/_authenticated/products/')({
@@ -17,6 +19,25 @@ const columns = [
 	{
 		header: 'Name',
 		accessorKey: 'name',
+	},
+];
+
+type Product = (typeof data)[number];
+
+const rowActions: DataTableRowAction<Product>[] = [
+	{
+		type: 'button',
+		icon: PencilIcon,
+		tooltip: 'Edit',
+		onClick: () => undefined,
+	},
+	{
+		type: 'button',
+		icon: Trash2Icon,
+		tooltip: 'Delete',
+		variant: 'destructive',
+		isGhost: true,
+		onClick: () => undefined,
 	},
 ];
 
@@ -58,6 +79,7 @@ function ProductsPage() {
 				columns={columns}
 				data={paginatedProducts?.items ?? []}
 				isLoading={isFetching}
+				rowActions={rowActions}
 				pagination={{
 					isServerSide: true,
 					state: pagination,

@@ -3,6 +3,7 @@ import {
 	getPaginationRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table';
 import { LoaderCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -10,8 +11,9 @@ import { Table } from '@/components/table';
 import { DataTableBody } from './data-table-body';
 import { DataTableFooter } from './data-table-footer';
 import { DataTableHeader } from './data-table-header';
-import type { DataTableProps } from './types';
 import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from './consts';
+import type { DataTableProps } from './types';
+import { createRowActionsColumn } from './utils.tsx';
 
 export const DataTable = <TData, TValue>({
 	columns,
@@ -20,6 +22,7 @@ export const DataTable = <TData, TValue>({
 	emptyMessage = 'No results.',
 	className,
 	pagination,
+	rowActions,
 }: DataTableProps<TData, TValue>) => {
 	'use no memo';
 
@@ -34,10 +37,17 @@ export const DataTable = <TData, TValue>({
 	const resolvedOnPaginationChange = isServerPaginationEnabled
 		? pagination.onPaginationChange
 		: setTablePagination;
+	const hasRowActions = (rowActions?.length ?? 0) > 0;
+	const resolvedColumns: ColumnDef<TData, unknown>[] = hasRowActions
+		? [
+				...(columns as ColumnDef<TData, unknown>[]),
+				createRowActionsColumn(rowActions ?? []),
+			]
+		: (columns as ColumnDef<TData, unknown>[]);
 
 	const table = useReactTable({
 		data,
-		columns,
+		columns: resolvedColumns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: isServerPaginationEnabled
 			? undefined
@@ -68,7 +78,7 @@ export const DataTable = <TData, TValue>({
 
 				<DataTableBody
 					table={table}
-					colSpan={columns.length}
+					colSpan={resolvedColumns.length}
 					isLoading={shouldShowLoading}
 					emptyMessage={emptyMessage}
 				/>
