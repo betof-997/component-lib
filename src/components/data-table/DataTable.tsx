@@ -1,11 +1,13 @@
 import {
 	getCoreRowModel,
+	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
 import type {
 	ColumnDef,
+	ColumnFiltersState,
 	OnChangeFn,
 	SortingState,
 	Updater,
@@ -19,7 +21,7 @@ import { DataTableFooter } from './data-table-footer';
 import { DataTableHeader } from './data-table-header';
 import { DataTableToolbar } from './data-table-toolbar';
 import { DEFAULT_DATA_TABLE_PAGE_SIZE_OPTIONS } from './consts';
-import type { DataTableProps } from './types';
+import type { DataTableProps, DataTableFilterItem } from './types';
 import { createRowActionsColumn } from './utils.tsx';
 
 const resolveSingleColumnSorting = <TData,>(
@@ -41,6 +43,49 @@ const resolveSingleColumnSorting = <TData,>(
 	];
 };
 
+const resolveColumnFilters = (
+	updater: Updater<ColumnFiltersState>,
+	previousColumnFilters: ColumnFiltersState,
+) => (typeof updater === 'function' ? updater(previousColumnFilters) : updater);
+
+const hasColumnFiltersChanged = (
+	previousColumnFilters: ColumnFiltersState,
+	nextColumnFilters: ColumnFiltersState,
+) => {
+	if (previousColumnFilters.length !== nextColumnFilters.length) {
+		return true;
+	}
+
+	return previousColumnFilters.some((previousFilter, index) => {
+		const nextFilter = nextColumnFilters[index];
+		return (
+			previousFilter?.id !== nextFilter?.id ||
+			previousFilter?.value !== nextFilter?.value
+		);
+	});
+};
+
+const toServerDataTableFilters = <TData,>(
+	columnFilters: ColumnFiltersState,
+): DataTableFilterItem<TData>[] =>
+	columnFilters.flatMap((columnFilter) => {
+		if (typeof columnFilter.value !== 'string') {
+			return [];
+		}
+
+		const value = columnFilter.value.trim();
+		if (!value) {
+			return [];
+		}
+
+		return [
+			{
+				id: columnFilter.id as Extract<keyof TData, string>,
+				value,
+			},
+		];
+	});
+
 export const DataTable = <TData, TValue>({
 	columns,
 	data,
@@ -50,6 +95,7 @@ export const DataTable = <TData, TValue>({
 	defaultSort,
 	pagination,
 	sort,
+	filter,
 	rowActions,
 	toolbarActions,
 }: DataTableProps<TData, TValue>) => {
@@ -62,6 +108,8 @@ export const DataTable = <TData, TValue>({
 	const [tableSorting, setTableSorting] = useState<SortingState>(() =>
 		defaultSort ? [defaultSort] : [],
 	);
+	const [tableColumnFilters, setTableColumnFilters] =
+		useState<ColumnFiltersState>([]);
 	const serverPagination =
 		pagination?.isServerSide === true ? pagination : null;
 	const isServerPaginationEnabled = serverPagination !== null;
@@ -72,6 +120,14 @@ export const DataTable = <TData, TValue>({
 	const isClientSortEnabled = !isServerPaginationEnabled && sort !== false;
 	const isServerSortEnabled = isServerPaginationEnabled && serverSort !== null;
 	const isSortingEnabled = isClientSortEnabled || isServerSortEnabled;
+	const serverFilter =
+		isServerPaginationEnabled && typeof filter === 'object' && filter !== null
+			? filter
+			: null;
+	const isClientFilterEnabled = !isServerPaginationEnabled;
+	const isServerFilterEnabled =
+		isServerPaginationEnabled && serverFilter !== null;
+	const isFilteringEnabled = isClientFilterEnabled || isServerFilterEnabled;
 	const resolvedPagination = isServerPaginationEnabled
 		? serverPagination.state
 		: tablePagination;
@@ -83,6 +139,12 @@ export const DataTable = <TData, TValue>({
 		: isClientSortEnabled
 			? tableSorting
 			: [];
+	const resolvedColumnFilters = isServerFilterEnabled
+		? serverFilter.state.map((filterItem) => ({
+				id: filterItem.id,
+				value: filterItem.value,
+			}))
+		: tableColumnFilters;
 	const resolvedOnSortingChange: OnChangeFn<SortingState> = (updater) => {
 		if (!isSortingEnabled) {
 			return;
@@ -119,6 +181,36 @@ export const DataTable = <TData, TValue>({
 
 		setTableSorting(nextSorting);
 	};
+	const resolvedOnColumnFiltersChange: OnChangeFn<ColumnFiltersState> = (
+		updater,
+	) => {
+		if (!isFilteringEnabled) {
+			return;
+		}
+
+		const nextColumnFilters = resolveColumnFilters(
+			updater,
+			resolvedColumnFilters,
+		);
+		const didFiltersChange = hasColumnFiltersChanged(
+			resolvedColumnFilters,
+			nextColumnFilters,
+		);
+
+		if (didFiltersChange) {
+			resolvedOnPaginationChange((previousPagination) => ({
+				...previousPagination,
+				pageIndex: 0,
+			}));
+		}
+
+		if (isServerFilterEnabled) {
+			serverFilter.setState(toServerDataTableFilters<TData>(nextColumnFilters));
+			return;
+		}
+
+		setTableColumnFilters(nextColumnFilters);
+	};
 	const hasToolbarActions = (toolbarActions?.length ?? 0) > 0;
 	const hasRowActions = (rowActions?.length ?? 0) > 0;
 	const resolvedColumns: ColumnDef<TData, unknown>[] = hasRowActions
@@ -135,12 +227,15 @@ export const DataTable = <TData, TValue>({
 		getPaginationRowModel: isServerPaginationEnabled
 			? undefined
 			: getPaginationRowModel(),
-		getSortedRowModel: isClientSortEnabled
-			? getSortedRowModel()
+		getSortedRowModel: isClientSortEnabled ? getSortedRowModel() : undefined,
+		getFilteredRowModel: isClientFilterEnabled
+			? getFilteredRowModel()
 			: undefined,
 		manualPagination: isServerPaginationEnabled,
 		manualSorting: isServerSortEnabled,
+		manualFiltering: isServerFilterEnabled,
 		enableSorting: isSortingEnabled,
+		enableColumnFilters: isFilteringEnabled,
 		enableMultiSort: false,
 		enableSortingRemoval: !isServerPaginationEnabled,
 		rowCount: isServerPaginationEnabled
@@ -148,9 +243,13 @@ export const DataTable = <TData, TValue>({
 			: undefined,
 		onPaginationChange: resolvedOnPaginationChange,
 		onSortingChange: isSortingEnabled ? resolvedOnSortingChange : undefined,
+		onColumnFiltersChange: isFilteringEnabled
+			? resolvedOnColumnFiltersChange
+			: undefined,
 		state: {
 			pagination: resolvedPagination,
 			sorting: resolvedSorting,
+			columnFilters: resolvedColumnFilters,
 		},
 	});
 

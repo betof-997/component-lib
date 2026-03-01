@@ -24,6 +24,16 @@ export type DataTableServerSort<TData> = {
 	setState: OnChangeFn<DataTableSort<TData>>;
 };
 
+export type DataTableFilterItem<TData> = {
+	id: Extract<keyof TData, string>;
+	value: string;
+};
+
+export type DataTableServerFilter<TData> = {
+	state: DataTableFilterItem<TData>[];
+	setState: OnChangeFn<DataTableFilterItem<TData>[]>;
+};
+
 export type DataTableClientPagination = DataTablePaginationBaseOptions & {
 	isServerSide?: false;
 };
@@ -35,7 +45,9 @@ export type DataTableServerPagination = DataTablePaginationBaseOptions & {
 	totalItems: number;
 };
 
-export type DataTablePagination = DataTableClientPagination | DataTableServerPagination;
+export type DataTablePagination =
+	| DataTableClientPagination
+	| DataTableServerPagination;
 
 export type DataTableColumnMeta = {
 	headerClassName?: string;
@@ -132,6 +144,7 @@ export type DataTableClientProps<TData, TValue> = DataTableSharedProps<
 > & {
 	pagination?: DataTableClientPagination;
 	sort?: DataTableClientSort;
+	filter?: never;
 	defaultSort?: DataTableSort<TData>;
 };
 
@@ -141,6 +154,7 @@ export type DataTableServerProps<TData, TValue> = DataTableSharedProps<
 > & {
 	pagination: DataTableServerPagination;
 	sort?: DataTableServerSort<TData>;
+	filter?: DataTableServerFilter<TData>;
 	defaultSort?: never;
 };
 

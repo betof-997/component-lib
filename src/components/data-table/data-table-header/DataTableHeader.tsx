@@ -1,8 +1,10 @@
+import { Button } from '@/components/button';
 import { Table } from '@/components/table';
 import { flexRender } from '@tanstack/react-table';
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { DataTableHeaderProps } from './types';
+import { DataTableFilter } from '../data-table-filter/DataTableFilter';
 import type { DataTableColumnMeta } from '../types';
 
 export const DataTableHeader = <TData,>({
@@ -19,37 +21,53 @@ export const DataTableHeader = <TData,>({
 							| DataTableColumnMeta
 							| undefined;
 
+						const sortState = header.column.getIsSorted();
+						const isSorted = sortState !== false;
+
 						return (
 							<Table.Head
 								key={header.id}
-								className={cn(
-									meta?.headerClassName,
-									header.column.getIsSorted() && 'bg-muted/70',
-								)}
+								className={cn(meta?.headerClassName, isSorted && 'bg-muted/70')}
 							>
-								{header.isPlaceholder ? null : header.column.getCanSort() ? (
-									<button
-										type='button'
-										className='inline-flex cursor-pointer items-center gap-1 select-none'
-										onClick={header.column.getToggleSortingHandler()}
-									>
-										{flexRender(
-											header.column.columnDef.header,
-											header.getContext(),
-										)}
-										{header.column.getIsSorted() === 'asc' ? (
-											<ArrowUpIcon className='text-muted-foreground size-3.5' />
-										) : header.column.getIsSorted() === 'desc' ? (
-											<ArrowDownIcon className='text-muted-foreground size-3.5' />
-										) : (
-											<ArrowUpDownIcon className='text-muted-foreground size-3.5' />
-										)}
-									</button>
-								) : (
-									flexRender(
-										header.column.columnDef.header,
-										header.getContext(),
-									)
+								{header.isPlaceholder ? null : (
+									<div className='flex items-center gap-1.5'>
+										<div className='min-w-0 truncate'>
+											{flexRender(
+												header.column.columnDef.header,
+												header.getContext(),
+											)}
+										</div>
+
+										<div className='flex shrink-0 items-center gap-1'>
+											{header.column.getCanSort() ? (
+												<Button
+													size='xxs'
+													isRounded={true}
+													variant='primary'
+													isGhost={!isSorted}
+													isOutlined={isSorted}
+													className={cn(
+														'shrink-0',
+														!isSorted &&
+															'text-foreground/50 hover:text-foreground',
+													)}
+													aria-label='Toggle column sorting'
+													title='Toggle column sorting'
+													onClick={header.column.getToggleSortingHandler()}
+												>
+													{sortState === 'asc' ? (
+														<ArrowUpIcon className='size-3.5' />
+													) : sortState === 'desc' ? (
+														<ArrowDownIcon className='size-3.5' />
+													) : (
+														<ArrowUpDownIcon className='size-3.5' />
+													)}
+												</Button>
+											) : null}
+
+											<DataTableFilter column={header.column} />
+										</div>
+									</div>
 								)}
 							</Table.Head>
 						);

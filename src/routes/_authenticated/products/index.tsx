@@ -1,7 +1,10 @@
+import type {
+	DataTableRowAction,
+	DataTableSort,
+	DataTableToolbarAction,
+} from '@/components/data-table';
 import { DataTable } from '@/components/data-table';
-import type { DataTableRowAction } from '@/components/data-table';
-import type { DataTableSort } from '@/components/data-table';
-import type { DataTableToolbarAction } from '@/components/data-table';
+import type { DataTableFilterItem } from '@/components/data-table/types';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
@@ -68,13 +71,32 @@ const getPaginatedProducts = createServerFn()
 			pageIndex: number;
 			pageSize: number;
 			sort: DataTableSort<Product>;
+			filters: { id: keyof Product; value: string }[];
 		}) => d,
 	)
-	.handler(async ({ data: { pageIndex, pageSize, sort } }) => {
+	.handler(async ({ data: { pageIndex, pageSize, sort, filters } }) => {
 		const start = pageIndex * pageSize;
 		const end = start + pageSize;
 
-		const paginatedData = [...data]
+		const filteredData = [...data].filter((item) => {
+			return filters.every((filter) => {
+				if (filter.id === 'name') {
+					return item.name.includes(filter.value);
+				}
+				if (filter.id === 'description') {
+					return item.description.includes(filter.value);
+				}
+				if (filter.id === 'price') {
+					return item.price.toString().includes(filter.value);
+				}
+				if (filter.id === 'id') {
+					return item.id.toString().includes(filter.value);
+				}
+				return true;
+			});
+		});
+
+		const paginatedData = filteredData
 			.sort((a, b) => {
 				if (sort.id === 'name') {
 					return sort.desc
@@ -95,7 +117,7 @@ const getPaginatedProducts = createServerFn()
 
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 
-		return { items: paginatedData, totalItems: data.length };
+		return { items: paginatedData, totalItems: filteredData.length };
 	});
 
 function ProductsPage() {
@@ -107,6 +129,7 @@ function ProductsPage() {
 		id: 'name',
 		desc: false,
 	});
+	const [filters, setFilters] = useState<DataTableFilterItem<Product>[]>([]);
 
 	const { data: paginatedProducts, isFetching } = useQuery({
 		queryKey: [
@@ -115,6 +138,7 @@ function ProductsPage() {
 			pagination.pageSize,
 			sort.id,
 			sort.desc,
+			...filters.map((filter) => `${filter.id}:${filter.value}`),
 		],
 		queryFn: () =>
 			getPaginatedProducts({
@@ -122,6 +146,7 @@ function ProductsPage() {
 					pageIndex: pagination.pageIndex,
 					pageSize: pagination.pageSize,
 					sort,
+					filters,
 				},
 			}),
 		placeholderData: keepPreviousData,
@@ -146,6 +171,10 @@ function ProductsPage() {
 				sort={{
 					state: sort,
 					setState: setSort,
+				}}
+				filter={{
+					state: filters,
+					setState: setFilters,
 				}}
 			/>
 		</main>

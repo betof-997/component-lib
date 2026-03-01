@@ -1,0 +1,78 @@
+import { Button } from '@/components/button';
+import { fieldInputVariants } from '@/components/base-field/consts';
+import { Popover } from '@/components/popover';
+import { FilterIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import type { DataTableFilterProps } from './types';
+
+export const DataTableFilter = <TData,>({
+	column,
+}: DataTableFilterProps<TData>) => {
+	'use no memo'; // React Compiler + TanStack Table compatibility workaround.
+
+	const columnFilterValue = column.getFilterValue();
+	const isFiltered = column.getIsFiltered();
+
+	if (!column.getCanFilter()) {
+		return null;
+	}
+
+	return (
+		<Popover.Root>
+			<Popover.Trigger asChild>
+				<Button
+					size='xxs'
+					isRounded={true}
+					variant='primary'
+					isGhost={!isFiltered}
+					isOutlined={isFiltered}
+					className={cn(
+						'shrink-0',
+						!isFiltered && 'text-foreground/50 hover:text-foreground',
+					)}
+					aria-label='Open column filter'
+					title='Open column filter'
+				>
+					<FilterIcon className='size-3.5' />
+				</Button>
+			</Popover.Trigger>
+
+			<Popover.Content
+				align='end'
+				className='w-56'
+			>
+				<Popover.Title>Filter</Popover.Title>
+				<input
+					type='text'
+					data-slot='data-table-filter-input'
+					value={typeof columnFilterValue === 'string' ? columnFilterValue : ''}
+					onChange={(event) => {
+						column.setFilterValue(event.target.value);
+					}}
+					placeholder='Type to filter...'
+					className={cn(
+						fieldInputVariants({
+							height: 'fixed',
+							focusMode: 'focusVisible',
+						}),
+						'text-xs',
+					)}
+				/>
+				<div className='mt-1 flex justify-end border-t pt-2'>
+					<Button
+						type='button'
+						size='xs'
+						variant='primary'
+						isGhost={!isFiltered}
+						isOutlined={isFiltered}
+						onClick={() => {
+							column.setFilterValue('');
+						}}
+					>
+						Clear filter
+					</Button>
+				</div>
+			</Popover.Content>
+		</Popover.Root>
+	);
+};
